@@ -1,0 +1,1351 @@
+<!doctype html>
+<html lang="lo">
+<meta charset="utf-8">
+<title>Lao Agro Link · Web App</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bai+Jamjuree:wght@500;600;700&family=Noto+Sans+Lao:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style id="agroapp-styles">
+:root{
+  --paper:#FAFBF8; --surface:#FFFFFF; --surface-2:#F1F5EC; --line:#DDE4D8; --line-strong:#C3CEBB;
+  --ink:#16211B; --ink-soft:#3C4A41; --muted:#647065;
+  --green:#1C5D3C; --green-2:#2E7D46; --green-bg:#E5EFE7; --green-line:#9BC1A6;
+  --gold:#8F6608; --gold-bg:#F6EDD5; --gold-line:#DFC384;
+  --blue:#2F6FCB; --blue-bg:#E1EAF7; --purple:#6E5DA0; --purple-bg:#ECE6F5;
+  --crit:#A9382C; --crit-bg:#F6E3DF;
+  --sidebar:#FFFFFF; --hero-ink:#FFFFFF; --r:12px;
+}
+:root:not([data-theme="light"]){@media (prefers-color-scheme:dark){
+  --paper:#0E1310; --surface:#151D18; --surface-2:#1B241E; --line:#2A352C; --line-strong:#3A473C;
+  --ink:#E7EFE8; --ink-soft:#BBC8BD; --muted:#8B998D;
+  --green:#5FB584; --green-2:#7FC99C; --green-bg:#16261C; --green-line:#2E5540;
+  --gold:#E0B44A; --gold-bg:#2B2413; --gold-line:#5A4A1E;
+  --blue:#6FA0E6; --blue-bg:#152238; --purple:#A996D8; --purple-bg:#211B33;
+  --crit:#E08C7F; --crit-bg:#2E1712; --sidebar:#131A16;
+}}
+:root[data-theme="dark"]{
+  --paper:#0E1310; --surface:#151D18; --surface-2:#1B241E; --line:#2A352C; --line-strong:#3A473C;
+  --ink:#E7EFE8; --ink-soft:#BBC8BD; --muted:#8B998D;
+  --green:#5FB584; --green-2:#7FC99C; --green-bg:#16261C; --green-line:#2E5540;
+  --gold:#E0B44A; --gold-bg:#2B2413; --gold-line:#5A4A1E;
+  --blue:#6FA0E6; --blue-bg:#152238; --purple:#A996D8; --purple-bg:#211B33;
+  --crit:#E08C7F; --crit-bg:#2E1712; --sidebar:#131A16;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);font-family:"Noto Sans Lao","IBM Plex Sans Thai",system-ui,sans-serif;font-size:15px;line-height:1.65;-webkit-font-smoothing:antialiased}
+.mono{font-family:"IBM Plex Mono","Noto Sans Lao",monospace}
+h1,h2,h3,h4{font-family:"Bai Jamjuree","Noto Sans Lao",sans-serif;margin:0;font-weight:600;line-height:1.22;text-wrap:balance}
+button{font-family:inherit;cursor:pointer}
+a{color:inherit}
+button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+img{max-width:100%}
+::selection{background:color-mix(in srgb,var(--green) 25%,transparent)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.brand{display:flex;align-items:center;gap:9px;font-family:"Bai Jamjuree";font-weight:700;font-size:16px;white-space:nowrap;text-decoration:none;color:inherit}
+.brand .dot{width:26px;height:26px;border-radius:8px;background:var(--green);display:grid;place-items:center;color:#fff;flex:none}
+:root[data-theme="dark"] .brand .dot{color:#0E1310}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .brand .dot{color:#0E1310}}
+.btn{border:1px solid var(--green);background:var(--green);color:#fff;font-size:14px;font-weight:600;padding:10px 16px;border-radius:9px;display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;transition:filter .12s,border-color .12s}
+:root[data-theme="dark"] .btn{color:#0E1310}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn{color:#0E1310}}
+.btn:hover{filter:brightness(1.07)}
+.btn.gold{background:var(--gold);border-color:var(--gold)}
+.btn.blue{background:var(--blue);border-color:var(--blue)}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line-strong)}
+.btn.ghost:hover{border-color:var(--green);color:var(--green);filter:none}
+.btn.sm{padding:7px 12px;font-size:13px}
+.btn:disabled{opacity:.42;cursor:not-allowed;filter:none}
+.lng{display:inline-flex;border:1px solid var(--line);border-radius:9px;overflow:hidden;background:var(--surface)}
+.lng button{border:none;background:none;color:var(--muted);font-size:12.5px;padding:6px 11px;font-weight:600}
+.lng button[aria-pressed="true"]{background:var(--green);color:#fff}
+:root[data-theme="dark"] .lng button[aria-pressed="true"]{color:#0E1310}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .lng button[aria-pressed="true"]{color:#0E1310}}
+.chip{font-family:"IBM Plex Mono","Noto Sans Lao",monospace;font-size:10.5px;padding:2px 8px;border-radius:20px;border:1px solid var(--line-strong);color:var(--muted);white-space:nowrap;display:inline-flex;gap:4px;align-items:center}
+.chip.g{border-color:var(--green-line);color:var(--green);background:var(--green-bg)}
+.chip.gold{border-color:var(--gold-line);color:var(--gold);background:var(--gold-bg)}
+.chip.b{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
+.chip.p{border-color:var(--purple);color:var(--purple);background:var(--purple-bg)}
+.chip.r{border-color:var(--crit);color:var(--crit);background:var(--crit-bg)}
+.pubnav{position:sticky;top:0;z-index:30;background:color-mix(in srgb,var(--paper) 92%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.pubnav .in{max-width:1180px;margin:0 auto;padding:13px 22px;display:flex;align-items:center;gap:14px}
+.pubnav .sp{margin-left:auto;display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.hero{position:relative;overflow:hidden}
+.hero .bg{position:absolute;inset:0;background:linear-gradient(115deg,rgba(19,60,38,.93),rgba(28,93,60,.72) 55%,rgba(143,102,8,.30)),repeating-linear-gradient(100deg,#2e7d46 0 22px,#256a3b 22px 46px)}
+.hero .bg::after{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 80% 10%,rgba(240,220,150,.22),transparent 60%)}
+.hero .in{position:relative;max-width:1180px;margin:0 auto;padding:76px 22px 84px;color:var(--hero-ink)}
+.hero h1{font-size:clamp(34px,6vw,62px);font-weight:700;letter-spacing:-.01em;color:#fff;max-width:16ch}
+.hero p{font-size:clamp(16px,2vw,20px);max-width:52ch;margin:20px 0 0;color:rgba(255,255,255,.92)}
+.hero .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:30px}
+.hero .trust{margin-top:26px;font-family:"IBM Plex Mono","Noto Sans Lao";font-size:12.5px;color:rgba(255,255,255,.85)}
+.section{max-width:1180px;margin:0 auto;padding:56px 22px}
+.section h2{font-size:clamp(24px,3.4vw,32px);text-align:center;color:var(--green)}
+.section .lead{text-align:center;color:var(--muted);margin:10px auto 0;max-width:60ch}
+.flow{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:34px}
+.flow .step{display:flex;align-items:center;gap:10px}
+.flow .pill{background:var(--green-bg);border:1px solid var(--green-line);color:var(--green-2);border-radius:22px;padding:10px 16px;font-size:14px;font-weight:500;display:flex;flex-direction:column;line-height:1.2;align-items:center}
+.flow .pill.last{background:var(--gold-bg);border-color:var(--gold-line);color:var(--gold)}
+.flow .pill small{font-family:"IBM Plex Mono";font-size:10px;opacity:.75;font-weight:400}
+.flow .arw{color:var(--line-strong);font-size:18px}
+.feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:38px}
+.feat .c{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px}
+.feat .c .ic{width:40px;height:40px;border-radius:10px;background:var(--green-bg);color:var(--green);display:grid;place-items:center;margin-bottom:12px}
+.feat .c h3{font-size:16px;margin-bottom:6px}
+.feat .c p{font-size:13.5px;color:var(--ink-soft);margin:0}
+.pubfoot{border-top:1px solid var(--line);background:var(--surface-2)}
+.pubfoot .in{max-width:1180px;margin:0 auto;padding:26px 22px;display:flex;gap:16px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:13px}
+.authwrap{min-height:100vh;display:grid;place-items:center;padding:40px 20px;background:radial-gradient(120% 80% at 50% -10%,var(--green-bg),transparent 60%)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:0 10px 40px rgba(20,40,25,.08)}
+.logincard{width:100%;max-width:410px;padding:30px 30px 26px}
+.logincard .lgtop{display:flex;justify-content:center;margin-bottom:8px}
+.logincard h2{text-align:center;font-size:22px;color:var(--green)}
+.logincard .sub{text-align:center;color:var(--muted);font-size:13.5px;margin:6px 0 22px}
+.f{display:block;margin-bottom:14px}
+.f label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px;font-weight:500}
+.f input{width:100%;padding:11px 13px;border:1px solid var(--line-strong);border-radius:10px;background:var(--surface);color:var(--ink);font-size:14px;font-family:inherit}
+.demoflag{font-size:11.5px;color:var(--gold);background:var(--gold-bg);border:1px dashed var(--gold-line);border-radius:8px;padding:7px 10px;margin:2px 0 16px;text-align:center}
+.linkrow{text-align:center;margin-top:16px;font-size:13px;color:var(--muted)}
+.linkrow a{color:var(--green);font-weight:600;text-decoration:none;cursor:pointer}
+.or-div{display:flex;align-items:center;gap:12px;margin:18px 0 14px;color:var(--muted);font-size:11.5px;font-family:"IBM Plex Mono","Noto Sans Lao"}
+.or-div::before,.or-div::after{content:"";flex:1;height:1px;background:var(--line)}
+.tester{border:1px dashed var(--gold-line);background:var(--gold-bg);border-radius:12px;padding:14px}
+.tester-lab{font-family:"IBM Plex Mono","Noto Sans Lao";font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--gold);font-weight:600;display:flex;gap:6px;align-items:center}
+.tester-hint{font-size:12px;color:var(--ink-soft);margin:7px 0 11px;line-height:1.5}
+.tester-row{display:flex;gap:8px}
+.tester-row select{flex:1;min-width:0;font-family:inherit;font-size:13px;padding:9px 10px;border:1px solid var(--line-strong);border-radius:9px;background:var(--surface);color:var(--ink)}
+.tester-row .btn{white-space:nowrap;flex:none}
+.rolewrap{min-height:100vh;padding:40px 20px 60px;background:radial-gradient(120% 60% at 50% -10%,var(--green-bg),transparent 55%)}
+.rolehead{text-align:center;max-width:640px;margin:10px auto 30px}
+.rolehead .logo{width:56px;height:56px;border-radius:16px;background:var(--green);display:grid;place-items:center;margin:0 auto 16px;color:#fff}
+:root[data-theme="dark"] .rolehead .logo{color:#0E1310}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .rolehead .logo{color:#0E1310}}
+.rolehead h2{font-size:28px;color:var(--green)}
+.rolehead p{color:var(--muted);margin-top:8px}
+.rolegrid{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:720px){.rolegrid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:460px){.rolegrid{grid-template-columns:1fr}}
+.rolecard{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:22px 16px;text-align:center;cursor:pointer;transition:transform .12s,border-color .12s,box-shadow .12s}
+.rolecard:hover{transform:translateY(-3px);border-color:var(--green-line);box-shadow:0 8px 24px rgba(20,40,25,.09)}
+.rolecard .ic{width:44px;height:44px;margin:0 auto 12px;color:var(--green);display:grid;place-items:center}
+.rolecard .lo{font-family:"Noto Sans Lao";font-weight:600;font-size:15px}
+.rolecard .en{font-family:"IBM Plex Mono";font-size:11px;color:var(--muted);margin-top:3px}
+.backlink{display:block;text-align:center;margin-top:26px;color:var(--muted);font-size:14px;text-decoration:none}
+.backlink:hover{color:var(--green)}
+.shell{display:grid;grid-template-columns:238px 1fr;min-height:100vh}
+@media (max-width:860px){.shell{grid-template-columns:1fr}}
+.side{background:var(--sidebar);border-right:1px solid var(--line);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+@media (max-width:860px){.side{position:fixed;z-index:50;width:238px;left:0;top:0;transform:translateX(-100%);transition:transform .2s;box-shadow:0 0 40px rgba(0,0,0,.2)}.side.open{transform:none}}
+.side .top{padding:18px 18px 12px}
+.side nav{padding:6px 12px;flex:1;overflow-y:auto}
+.side nav a{display:flex;align-items:center;gap:11px;padding:10px 12px;border-radius:10px;color:var(--ink-soft);text-decoration:none;font-size:14px;margin-bottom:2px;cursor:pointer}
+.side nav a .ic{width:19px;height:19px;flex:none;color:var(--muted)}
+.side nav a:hover{background:var(--surface-2)}
+.side nav a.on{background:var(--green-bg);color:var(--green);font-weight:600}
+.side nav a.on .ic{color:var(--green)}
+.side nav a .en{font-family:"IBM Plex Mono";font-size:10px;color:var(--muted);margin-left:auto}
+.side .bot{padding:12px;border-top:1px solid var(--line)}
+.side .bot a{display:flex;align-items:center;gap:10px;padding:9px 12px;color:var(--muted);text-decoration:none;font-size:13.5px;border-radius:9px;cursor:pointer}
+.side .bot a:hover{background:var(--surface-2);color:var(--ink)}
+.main{min-width:0;display:flex;flex-direction:column}
+.apptop{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 90%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);padding:12px 24px;display:flex;align-items:center;gap:12px}
+.apptop h1{font-size:19px}
+.apptop .burger{display:none;border:1px solid var(--line);background:var(--surface);border-radius:9px;padding:6px 9px}
+@media (max-width:860px){.apptop .burger{display:inline-flex}}
+.apptop .sp{margin-left:auto;display:flex;gap:9px;align-items:center}
+.rolebadge{background:var(--green-bg);color:var(--green);border:1px solid var(--green-line);font-size:12.5px;font-weight:600;padding:5px 12px;border-radius:20px;white-space:nowrap}
+.rolebadge.gov{background:var(--blue-bg);color:var(--blue);border-color:var(--blue)}
+.rolebadge.guest{background:var(--gold-bg);color:var(--gold);border-color:var(--gold-line)}
+.avatar{width:32px;height:32px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;color:var(--muted)}
+.content{padding:24px;max-width:1240px;width:100%;margin:0 auto}
+.greet h2{font-size:26px}
+.greet p{color:var(--muted);margin:4px 0 0}
+.statgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:14px;margin:22px 0}
+.scard{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px}
+.scard .lab{font-size:12.5px;color:var(--muted)}
+.scard .big{font-family:"Bai Jamjuree","Noto Sans Lao";font-weight:700;font-size:26px;margin-top:4px;color:var(--green);font-variant-numeric:tabular-nums}
+.scard .big.gold{color:var(--gold)} .scard .big.blue{color:var(--blue)}
+.scard .sub{font-size:12px;color:var(--muted);margin-top:2px}
+.block{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin:18px 0}
+.block .bh{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+.block .bh h3{font-size:16px}
+.block .bh .r{margin-left:auto;font-size:13px;color:var(--green);font-weight:600}
+.progress{height:12px;border-radius:8px;background:var(--surface-2);overflow:hidden;margin-top:12px}
+.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--green-2),var(--green));border-radius:8px}
+.qa{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px}
+.qa button{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:22px 14px;display:flex;flex-direction:column;align-items:center;gap:10px;color:var(--ink);font-size:14px;font-weight:500}
+.qa button:hover{border-color:var(--green-line);color:var(--green)}
+.qa .ic{color:var(--green)}
+.lifecycle{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px}
+.lifecycle .st{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--muted)}
+.lifecycle .n{width:24px;height:24px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line-strong);display:grid;place-items:center;font-size:12px;font-family:"IBM Plex Mono";font-weight:600}
+.lifecycle .st.done{color:var(--green)} .lifecycle .st.done .n{background:var(--green);color:#fff;border-color:var(--green)}
+:root[data-theme="dark"] .lifecycle .st.done .n{color:#0E1310}
+.lifecycle .st.cur{color:var(--gold)} .lifecycle .st.cur .n{background:var(--gold);color:#fff;border-color:var(--gold)}
+.lifecycle .arw{color:var(--line-strong)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:middle}
+thead th{font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-family:"IBM Plex Mono","Noto Sans Lao"}
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px}
+.tablewrap table{min-width:520px}
+.qr{width:66px;height:66px;border-radius:12px;background:conic-gradient(from 0deg,#0000 0 25%,currentColor 0 50%,#0000 0 75%,currentColor 0),var(--surface-2);background-size:14px 14px;border:1px solid var(--line);color:var(--ink-soft);opacity:.75}
+.tl{position:relative;margin-top:10px}
+.tl .ev{display:flex;gap:14px;padding-bottom:20px;position:relative}
+.tl .ev:last-child{padding-bottom:0}
+.tl .ev::before{content:"";position:absolute;left:7px;top:18px;bottom:-2px;width:2px;background:var(--line)}
+.tl .ev:last-child::before{display:none}
+.tl .d{width:16px;height:16px;border-radius:50%;border:3px solid var(--green);background:var(--surface);flex:none;margin-top:2px;z-index:1}
+.tl .ev.pending .d{border-color:var(--line-strong)}
+.tl .ev.pending{opacity:.6}
+.tl h4{font-size:14.5px}
+.tl .m{font-size:12.5px;color:var(--muted);font-family:"IBM Plex Mono","Noto Sans Lao"}
+.market{display:grid;grid-template-columns:1fr 1.2fr .95fr;gap:14px;align-items:start}
+@media (max-width:1080px){.market{grid-template-columns:1fr 1fr}.market .col-side{grid-column:1/-1}}
+@media (max-width:660px){.market{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.panel .ph{padding:13px 16px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px}
+.panel .ph h3{font-size:14.5px}
+.panel .ph .c{margin-left:auto;font-family:"IBM Plex Mono";font-size:11px;color:var(--muted)}
+.panel .pb{padding:13px 16px;max-height:620px;overflow-y:auto}
+.mribbon{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:16px}
+.lotcard{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;cursor:pointer;transition:border-color .12s}
+.lotcard:hover{border-color:var(--line-strong)}
+.lotcard.sel{border-color:var(--green);box-shadow:0 0 0 1px var(--green)}
+.lotcard .r1{display:flex;align-items:center;gap:8px}
+.lotcard .id{font-family:"IBM Plex Mono";font-weight:600;font-size:12.5px}
+.lotcard .qty{margin-left:auto;font-family:"IBM Plex Mono";font-weight:600;color:var(--gold);font-size:13px}
+.lotcard .r2{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.lotcard .offer{margin-top:9px;padding-top:9px;border-top:1px dashed var(--line);font-size:12.5px;display:flex;gap:8px;align-items:center}
+.lotcard .offer .pr{font-family:"IBM Plex Mono";font-weight:600;color:var(--green)}
+.dz{color:var(--muted);text-align:center;padding:34px 14px;font-size:13.5px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:5px 14px;margin:12px 0;font-size:13.5px}
+.kv dt{color:var(--muted);font-size:12.5px}
+.kv dd{margin:0;text-align:right;font-family:"IBM Plex Mono","Noto Sans Lao";font-size:12.5px}
+.slab{font-family:"IBM Plex Mono","Noto Sans Lao";font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:16px 0 8px}
+.prov{display:flex;flex-wrap:wrap;gap:5px}
+.prov .p{font-family:"IBM Plex Mono";font-size:11px;background:var(--surface-2);border:1px solid var(--line);padding:2px 8px;border-radius:6px}
+.chain .node{display:flex;gap:11px;position:relative;padding-bottom:13px}
+.chain .node:last-child{padding-bottom:0}
+.chain .node::before{content:"";position:absolute;left:6px;top:17px;bottom:-3px;width:2px;background:var(--line)}
+.chain .node:last-child::before{display:none}
+.chain .dc{width:13px;height:13px;border-radius:50%;border:2px solid var(--green);background:var(--surface);flex:none;margin-top:3px;z-index:1}
+.chain .node.cur .dc{background:var(--green)}
+.chain .who{font-size:13.5px;font-weight:600}
+.chain .mt{font-family:"IBM Plex Mono","Noto Sans Lao";font-size:11px;color:var(--muted)}
+.acts{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:9px}
+.acts.one{grid-template-columns:1fr}
+.fld{display:flex;gap:8px;align-items:center;margin:9px 0;flex-wrap:wrap}
+.fld label{color:var(--muted);font-size:12px;min-width:64px}
+.fld select,.fld input{font-family:"IBM Plex Mono","Noto Sans Lao";font-size:13px;padding:8px 10px;border:1px solid var(--line-strong);border-radius:9px;background:var(--surface);color:var(--ink);flex:1;min-width:90px}
+.subtabs{display:flex;gap:4px;padding:11px 12px 0;flex-wrap:wrap}
+.subtabs button{border:none;background:none;color:var(--muted);font-family:"IBM Plex Mono","Noto Sans Lao";font-size:11.5px;padding:6px 9px;border-radius:8px}
+.subtabs button[aria-pressed="true"]{background:var(--surface-2);color:var(--ink);font-weight:600}
+.led{font-family:"IBM Plex Mono","Noto Sans Lao";font-size:11.5px}
+.led .row{display:grid;grid-template-columns:26px 1fr auto;gap:8px;padding:8px 0;border-bottom:1px solid var(--line);align-items:center}
+.led .row:last-child{border-bottom:none}
+.led .seq{color:var(--muted)} .led .val{color:var(--green);font-weight:600}
+.logrow{display:flex;gap:9px;padding:9px 0;border-bottom:1px solid var(--line);font-size:12.5px}
+.logrow:last-child{border-bottom:none}
+.logrow .ic{width:22px;height:22px;border-radius:6px;flex:none;display:grid;place-items:center;font-size:11px;font-weight:600}
+.ic.ok{background:var(--green-bg);color:var(--green)} .ic.no{background:var(--crit-bg);color:var(--crit)} .ic.mv{background:var(--blue-bg);color:var(--blue)} .ic.sys{background:var(--surface-2);color:var(--muted)}
+.logrow .tt{margin-left:auto;font-family:"IBM Plex Mono";font-size:10px;color:var(--muted);white-space:nowrap}
+.guestbar{background:var(--gold-bg);border:1px solid var(--gold-line);color:var(--ink-soft);border-radius:12px;padding:11px 16px;margin-bottom:16px;font-size:13px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.guestbar b{color:var(--gold)}
+.guestbar.gov{background:var(--blue-bg);border-color:var(--blue)}
+.guestbar.gov b{color:var(--blue)}
+.note{font-size:12px;color:var(--muted);background:var(--surface-2);border:1px dashed var(--line-strong);border-radius:10px;padding:9px 12px;margin-top:10px}
+.pgsub{color:var(--muted);font-size:14px;margin:2px 0 0}
+.block .bh h3::before,.panel .ph h3::before{content:"";display:inline-block;width:4px;height:14px;border-radius:3px;background:var(--green);margin-right:9px;vertical-align:-2px}
+.ibadge{margin-left:auto;background:var(--crit);color:#fff;font-family:"IBM Plex Mono";font-size:10px;font-weight:700;min-width:18px;height:18px;padding:0 5px;border-radius:20px;display:grid;place-items:center}
+:root[data-theme="dark"] .ibadge{color:#0E1310}
+.reqrow{display:flex;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line)}
+.reqrow:last-child{border-bottom:none}
+.reqrow .reqbtns{margin-left:auto;display:flex;gap:7px;flex:none}
+.reqrow b{font-size:14px}
+.modalbg{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:70;display:grid;place-items:center;padding:20px}
+.modal{background:var(--surface);border:1px solid var(--line);border-radius:16px;max-width:440px;width:100%;padding:22px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+.modal h3{font-size:18px;margin:0 0 3px}
+.modal .msub{color:var(--muted);font-size:13px;margin:0 0 16px}
+.modal .fld{display:block;margin-bottom:12px}
+.modal .fld span{display:block;font-size:12.5px;color:var(--muted);margin-bottom:5px}
+.modal .fld input,.modal .fld select{width:100%;padding:10px 12px;border:1px solid var(--line-strong);border-radius:9px;background:var(--surface);color:var(--ink);font-family:inherit;font-size:14px}
+.modal .mrow{display:flex;gap:10px}
+.modal .mrow .btn{flex:1}
+/* ── Real report overlay (printable white document) ── */
+.report-ov{position:fixed;inset:0;z-index:80;background:rgba(6,12,9,.62);backdrop-filter:blur(5px);overflow:auto;padding:26px 14px;display:flex;justify-content:center;align-items:flex-start}
+.report-doc{width:100%;max-width:780px}
+.report-bar{display:flex;gap:8px;justify-content:flex-end;margin-bottom:12px}
+.report-page{background:#fff;color:#16211B;border-radius:14px;box-shadow:0 24px 60px rgba(0,0,0,.4);padding:38px 44px}
+.report-page .rp-head{display:flex;justify-content:space-between;align-items:flex-start;gap:18px;border-bottom:2px solid #1C5D3C;padding-bottom:14px;margin-bottom:8px}
+.report-page .rp-brand{font-family:'Bai Jamjuree',sans-serif;font-weight:700;font-size:19px;letter-spacing:.02em;color:#1C5D3C}
+.report-page .rp-sub{font-size:11.5px;color:#5C6B60;margin-top:2px}
+.report-page .rp-meta{font-family:'IBM Plex Mono',monospace;font-size:10.5px;line-height:1.55;color:#647065;text-align:right;white-space:nowrap}
+.report-page h1{font-family:'Bai Jamjuree',sans-serif;font-size:23px;font-weight:700;color:#16211B;margin:16px 0 18px}
+.report-page h2{font-family:'Bai Jamjuree',sans-serif;font-size:14.5px;font-weight:600;color:#1C5D3C;margin:24px 0 8px;border-left:3px solid #8F6608;padding-left:9px}
+.rp-kpi{display:grid;grid-template-columns:repeat(3,1fr);gap:11px}
+.rp-kpi>div{border:1px solid #DCE4D6;border-radius:10px;padding:11px 13px;background:#F7F9F4}
+.rp-kpi span{font-size:10.5px;color:#68766B;display:block;margin-bottom:3px;text-transform:uppercase;letter-spacing:.04em}
+.rp-kpi b{font-family:'Bai Jamjuree',sans-serif;font-size:19px;color:#1C5D3C;font-weight:700}
+.rp-kpi b i{font-style:normal;font-size:12px;color:#8A968C;font-weight:500}
+.report-page table{width:100%;border-collapse:collapse;font-size:12.5px;margin:2px 0}
+.report-page th,.report-page td{border-bottom:1px solid #E6EAE0;padding:7px 8px;text-align:left;vertical-align:top}
+.report-page th{color:#68766B;font-family:'IBM Plex Mono',monospace;font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.report-page td{font-family:'IBM Plex Mono',monospace;color:#2A362E}
+.rp-foot{margin-top:26px;padding-top:13px;border-top:1px solid #DCE4D6;font-size:10.5px;color:#8A968C;font-family:'IBM Plex Mono',monospace}
+@media print{
+  .side,.apptop,.scrim,#toast,.modalbg,.report-bar{display:none!important}
+  .shell{display:none!important}
+  .report-ov{position:static;background:#fff;backdrop-filter:none;padding:0;display:block;overflow:visible}
+  .report-doc{max-width:100%}
+  .report-page{box-shadow:none;border-radius:0;padding:0}
+  body{background:#fff!important}
+}
+.barlist .b{margin:12px 0}
+.barlist .b .t{display:flex;font-size:13.5px;margin-bottom:5px}
+.barlist .b .t .v{margin-left:auto;font-family:"IBM Plex Mono";font-weight:600}
+.barlist .track{height:9px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.barlist .track i{display:block;height:100%;background:var(--green);border-radius:6px}
+.ctr{border:1px solid var(--line);border-radius:11px;padding:11px 12px;margin-bottom:10px;font-size:12.5px}
+.ctr .r1{display:flex;gap:8px;align-items:center}
+.ctr .r1 .id{font-family:"IBM Plex Mono";font-weight:600}
+.ctr .r1 .st{margin-left:auto}
+.ctr .meta{font-family:"IBM Plex Mono","Noto Sans Lao";color:var(--muted);font-size:11px;margin-top:5px}
+.ctr .btn{margin-top:9px;width:100%}
+.mktprice{display:flex;align-items:center;gap:10px;background:var(--surface-2);border:1px solid var(--line);border-radius:11px;padding:10px 12px;margin-bottom:12px}
+.mktprice .v{font-family:"Bai Jamjuree";font-weight:700;font-size:18px;color:var(--blue)}
+.mktprice .lab{font-size:11.5px;color:var(--muted)}
+.mktprice .tk{border:1px solid var(--line-strong);background:var(--surface);border-radius:8px;width:30px;height:30px;font-size:15px;font-weight:600;color:var(--ink)}
+/* ═══ LANDING (editorial dark-first) ═══ */
+.lp{--hero-bg:#080D0A;--hero-mute:rgba(255,255,255,.66);--g:#4FCB80;--g2:#86E3AB;--au:#E7BE58}
+.lp-nav{position:absolute;top:0;left:0;right:0;z-index:10;display:flex;align-items:center;gap:14px;padding:20px clamp(16px,4vw,48px)}
+.lp-brand{display:flex;align-items:center;gap:11px;color:#fff;text-decoration:none;font-family:"Bai Jamjuree";font-weight:600;font-size:clamp(14px,2vw,16px);letter-spacing:.02em;white-space:nowrap}
+.lp-brand .c{color:var(--g2)} .lp-brand b{font-weight:700}
+.lp-logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#1C5D3C,#2E7D46);display:grid;place-items:center;color:#fff;border:1px solid rgba(255,255,255,.15);flex:none}
+.lp-navr{margin-left:auto;display:flex;align-items:center;gap:9px}
+.lp-navr .lng{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.2)}
+.lp-navr .lng button{color:rgba(255,255,255,.72)}
+.lp-signin{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.06);color:#fff;font-family:inherit;font-size:14px;font-weight:600;padding:9px 18px;border-radius:24px;backdrop-filter:blur(6px);white-space:nowrap}
+.lp-signin:hover{background:rgba(255,255,255,.13)}
+.lp-signin span{color:var(--g2)}
+.thm{width:38px;height:32px;border-radius:20px;border:1px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);color:#fff;display:grid;place-items:center;backdrop-filter:blur(6px);flex:none}
+.thm:hover{background:rgba(255,255,255,.15)}
+.apptop .thm,.logincard .thm,.rolewrap .thm{border-color:var(--line-strong);background:var(--surface);color:var(--ink-soft)}
+.apptop .thm:hover{background:var(--surface-2)}
+.lp-hero{position:relative;min-height:94vh;display:flex;flex-direction:column;justify-content:center;background:var(--hero-bg);overflow:hidden;color:#fff;padding:118px clamp(16px,4vw,48px) 0}
+.lp-hero-bg{position:absolute;inset:0;background:radial-gradient(80% 60% at 72% 12%,rgba(79,203,128,.20),transparent 60%),radial-gradient(70% 60% at 18% 92%,rgba(231,190,88,.13),transparent 60%),linear-gradient(180deg,#0A120D,#080D0A 62%,#070B08)}
+.lp-hero-bg::after{content:"";position:absolute;inset:0;opacity:.55;background-image:repeating-linear-gradient(45deg,rgba(255,255,255,.02) 0 2px,transparent 2px 24px),repeating-linear-gradient(-45deg,rgba(255,255,255,.015) 0 2px,transparent 2px 24px);-webkit-mask-image:radial-gradient(78% 78% at 50% 42%,#000,transparent);mask-image:radial-gradient(78% 78% at 50% 42%,#000,transparent)}
+.lp-hero-in{position:relative;max-width:960px;margin:0 auto;text-align:center;flex:1;display:flex;flex-direction:column;justify-content:center}
+.lp-eyebrow{font-family:"IBM Plex Mono","Noto Sans Lao";font-size:12px;letter-spacing:.13em;text-transform:uppercase;color:var(--g2);display:inline-flex;gap:8px;align-items:center;border:1px solid rgba(79,203,128,.3);background:rgba(79,203,128,.08);padding:7px 15px;border-radius:24px;margin-bottom:26px}
+.lp-hero-in .lp-eyebrow{align-self:center}
+.lp-eyebrow.sec{color:var(--green);border-color:color-mix(in srgb,var(--green) 30%,transparent);background:var(--green-bg)}
+.lp-h1{font-family:"Bai Jamjuree","Noto Sans Lao";font-weight:700;font-size:clamp(32px,6.2vw,68px);line-height:1.1;letter-spacing:-.01em;margin:0}
+.lp-h1 .gold{color:var(--au)}
+.lp-lead{color:var(--hero-mute);font-size:clamp(15px,1.7vw,19px);max-width:56ch;margin:24px auto 0;line-height:1.6}
+.lp-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+.lp-btn{display:inline-flex;align-items:center;gap:9px;font-family:inherit;font-size:15px;font-weight:600;padding:13px 26px;border-radius:30px;border:1px solid transparent;cursor:pointer;transition:transform .12s,filter .12s;color:#fff}
+.lp-btn:hover{transform:translateY(-2px)}
+.lp-btn.gold{background:linear-gradient(135deg,#E7BE58,#D8A93E);color:#231a05;box-shadow:0 10px 34px rgba(231,190,88,.24)}
+.lp-btn.ghost{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.22);backdrop-filter:blur(6px)}
+.lp-btn.greenghost{background:transparent;color:var(--g2);border-color:rgba(79,203,128,.42)}
+.lp-btn.greenghost:hover{background:rgba(79,203,128,.1)}
+.lp-ribbon{position:relative;display:flex;flex-wrap:wrap;gap:10px 20px;justify-content:center;align-items:center;padding:20px;border-top:1px solid rgba(255,255,255,.08);margin-top:38px;background:rgba(0,0,0,.22)}
+.lp-ribbon .ri{display:flex;align-items:baseline;gap:8px;font-family:"IBM Plex Mono","Noto Sans Lao";font-size:12.5px;color:var(--hero-mute)}
+.lp-ribbon .ri b{font-family:"Bai Jamjuree";font-size:16px;color:var(--au)}
+.lp-ribbon .dot{color:rgba(255,255,255,.2)}
+.lp-sec{background:var(--paper);color:var(--ink);padding:clamp(52px,8vw,104px) clamp(16px,4vw,48px);border-bottom:1px solid var(--line)}
+.lp-sec.alt{background:var(--surface-2)}
+.lp-sec-in{max-width:1180px;margin:0 auto}
+.lp-center{text-align:center}
+.lp-numblock{display:flex;align-items:center;gap:26px;margin-bottom:40px;flex-wrap:wrap}
+.lp-bignum{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(64px,12vw,140px);line-height:.8;color:transparent;-webkit-text-stroke:1.5px color-mix(in srgb,var(--green) 55%,transparent)}
+.lp-h2{font-family:"Bai Jamjuree","Noto Sans Lao";font-weight:700;font-size:clamp(25px,4vw,44px);line-height:1.14;letter-spacing:-.01em;margin:8px 0 0}
+.lp-h2 .green{color:var(--green)}
+.lp-h2.big{max-width:22ch;margin:14px auto 0}
+.lp-display{font-family:"Bai Jamjuree";font-weight:700;font-size:clamp(36px,8vw,88px);line-height:1;background:linear-gradient(180deg,var(--green-2),var(--green));-webkit-background-clip:text;background-clip:text;color:transparent;letter-spacing:-.02em;margin:14px 0 0}
+.lp-subc{color:var(--muted);max-width:64ch;margin:16px auto 0;font-size:15px}
+.lp-center .lp-subc{margin-left:auto;margin-right:auto}
+.lp-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:16px}
+.lp-stat{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px}
+.lp-stat .ic{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;margin-bottom:16px}
+.lp-stat .v{font-family:"Bai Jamjuree";font-weight:700;font-size:44px;line-height:1;color:var(--green)}
+.lp-stat .v small{font-size:18px;color:var(--muted);margin-left:3px}
+.lp-stat .lab{font-weight:600;margin-top:8px;font-size:15px}
+.lp-stat .sub{color:var(--muted);font-size:12.5px;margin-top:2px}
+.lp-stat .bar{height:6px;border-radius:6px;background:var(--surface-2);margin-top:14px;overflow:hidden}
+.lp-stat .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold-line),var(--gold));border-radius:6px}
+.ic.green{background:var(--green-bg);color:var(--green)} .ic.blue{background:var(--blue-bg);color:var(--blue)} .ic.purple{background:var(--purple-bg);color:var(--purple)} .ic.gold{background:var(--gold-bg);color:var(--gold)}
+.lp-feat{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:44px}
+.lp-fcard{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:24px;text-align:left;transition:border-color .15s,transform .15s}
+.lp-fcard:hover{transform:translateY(-3px);border-color:var(--line-strong)}
+.lp-fcard .ic{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;margin-bottom:16px}
+.lp-fcard h3{font-size:17px;margin:0 0 6px}
+.lp-fcard .acc{font-size:12.5px;font-weight:600;margin:0 0 10px}
+.lp-fcard .acc.green{color:var(--green)} .lp-fcard .acc.gold{color:var(--gold)} .lp-fcard .acc.blue{color:var(--blue)} .lp-fcard .acc.purple{color:var(--purple)}
+.lp-fcard .desc{font-size:13.5px;color:var(--ink-soft);margin:0;line-height:1.6}
+.lp-comm{display:flex;gap:16px;overflow-x:auto;padding:44px 2px 12px;scroll-snap-type:x mandatory}
+.lp-comm::-webkit-scrollbar{height:8px} .lp-comm::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:8px}
+.lp-ccard{flex:0 0 236px;scroll-snap-align:start;position:relative;border:1px solid var(--line);border-radius:20px;padding:26px 22px;min-height:270px;display:flex;flex-direction:column;justify-content:flex-end;background:var(--surface);overflow:hidden;text-align:left}
+.lp-ccard .glow{position:absolute;inset:0;background:radial-gradient(72% 55% at 50% 16%,color-mix(in srgb,var(--acc) 42%,transparent),transparent 70%);opacity:.5}
+.lp-ccard .idx{position:absolute;top:18px;left:22px;font-family:"Bai Jamjuree";font-weight:700;font-size:38px;color:transparent;-webkit-text-stroke:1.4px color-mix(in srgb,var(--acc) 65%,transparent);opacity:.85}
+.lp-ccard h3{position:relative;font-size:22px;margin:0}
+.lp-ccard .en{position:relative;color:var(--muted);font-family:"IBM Plex Mono";font-size:12px;margin-top:2px}
+.lp-ccard .tags{position:relative;display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.lp-ccard .tags span{font-family:"IBM Plex Mono","Noto Sans Lao";font-size:10px;border:1px solid var(--line-strong);color:var(--muted);padding:2px 8px;border-radius:20px}
+.lp-final{background:var(--hero-bg);color:#fff;padding:clamp(52px,8vw,96px) clamp(16px,4vw,48px) 0;position:relative;overflow:hidden}
+.lp-final::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 60% at 50% 0%,rgba(79,203,128,.16),transparent 60%)}
+.lp-final .lp-sec-in{position:relative}
+.lp-final .lp-h2{color:#fff} .lp-final .lp-subc{color:var(--hero-mute)}
+.lp-foot{position:relative;max-width:1180px;margin:52px auto 0;padding:22px 0 40px;border-top:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;color:rgba(255,255,255,.5);font-size:12.5px;font-family:"IBM Plex Mono","Noto Sans Lao"}
+@media (max-width:600px){.lp-ribbon{font-size:11px}.lp-numblock{gap:16px}}
+#toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%);z-index:80;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none}
+.tmsg{color:#fff;background:var(--ink);font-size:13px;padding:10px 16px;border-radius:10px;box-shadow:0 8px 26px rgba(0,0,0,.25);animation:pop .22s ease;max-width:92vw}
+.tmsg.bad{background:var(--crit)} .tmsg.good{background:var(--green)}
+:root[data-theme="dark"] .tmsg{color:#0E1310} :root[data-theme="dark"] .tmsg.bad{color:#fff}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:40}
+.scrim.on{display:block}
+@media(min-width:861px){.scrim{display:none!important}}
+/* ══════════ PREMIUM OVERHAUL LAYER ══════════ */
+:root{--sh-sm:0 1px 2px rgba(20,42,26,.05),0 2px 8px rgba(20,42,26,.05);--sh-md:0 6px 18px rgba(20,42,26,.08),0 14px 36px rgba(20,42,26,.07);--sh-lg:0 20px 60px rgba(20,42,26,.16);--ring:color-mix(in srgb,var(--green) 30%,transparent)}
+:root[data-theme="dark"]{--sh-sm:0 1px 2px rgba(0,0,0,.35);--sh-md:0 8px 22px rgba(0,0,0,.42);--sh-lg:0 24px 60px rgba(0,0,0,.6)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--sh-sm:0 1px 2px rgba(0,0,0,.35);--sh-md:0 8px 22px rgba(0,0,0,.42);--sh-lg:0 24px 60px rgba(0,0,0,.6)}}
+body{font-feature-settings:"cv05","ss01";letter-spacing:.001em}
+/* content atmosphere */
+.main{background:radial-gradient(130% 90% at 100% -5%,color-mix(in srgb,var(--green) 6%,transparent),transparent 45%),radial-gradient(90% 70% at 0% 100%,color-mix(in srgb,var(--gold) 4%,transparent),transparent 50%)}
+.content{padding:26px 26px 44px}
+/* cards & surfaces — elevation + refined radius */
+.scard,.block,.panel,.rc,.stbox,.feat .c,.lp-stat,.lp-fcard,.tablewrap,.card{box-shadow:var(--sh-sm)}
+.block,.panel,.rc{border-radius:18px}
+.scard,.stbox{border-radius:16px;padding:18px 20px;position:relative;overflow:hidden}
+.scard::after,.stbox::after{content:"";position:absolute;inset:0 0 auto 0;height:1px;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--ink) 8%,transparent),transparent)}
+.block{padding:22px 24px}
+/* interactive lift */
+.lotcard,.rc,.qa button,.rolecard,.feat .c,.lp-fcard,.lp-ccard{transition:transform .16s cubic-bezier(.2,.7,.3,1),box-shadow .16s,border-color .16s}
+.lotcard:hover,.qa button:hover,.feat .c:hover{transform:translateY(-3px);box-shadow:var(--sh-md)}
+.rc:hover{box-shadow:var(--sh-md)}
+.lotcard.sel{box-shadow:0 0 0 1.5px var(--green),var(--sh-md)}
+/* stat numbers — premium typography */
+.scard .big{font-size:clamp(26px,3vw,32px);letter-spacing:-.025em;line-height:1.05}
+.scard .lab,.stbox .l{letter-spacing:.02em}
+.greet h2{letter-spacing:-.015em}
+h2,h1{letter-spacing:-.02em}
+/* sidebar refinement */
+.side{box-shadow:var(--sh-sm)}
+.side .top{padding:20px 18px 14px}
+.side nav a{transition:background .15s,color .15s;font-weight:500}
+.side nav a.on{position:relative;box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--green) 18%,transparent)}
+.side nav a.on::after{content:"";position:absolute;left:-12px;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--green)}
+.side nav{padding:8px 12px}
+/* topbar */
+.apptop{padding:14px 26px;box-shadow:0 1px 0 var(--line)}
+.apptop h1{letter-spacing:-.015em}
+.rolebadge{box-shadow:var(--sh-sm)}
+.avatar{box-shadow:var(--sh-sm)}
+/* buttons */
+.btn{box-shadow:var(--sh-sm);border-radius:10px;transition:transform .14s,filter .14s,box-shadow .14s}
+.btn:hover{transform:translateY(-1px);box-shadow:var(--sh-md)}
+.btn.ghost{box-shadow:none}
+.btn.ghost:hover{box-shadow:var(--sh-sm)}
+/* quick-action tiles */
+.qa button{border-radius:16px;padding:24px 14px}
+.qa .ic{width:44px;height:44px;border-radius:13px;background:var(--green-bg);display:grid;place-items:center}
+/* tables */
+.tablewrap{border-radius:16px}
+tbody tr{transition:background .12s}
+tbody tr:hover td{background:color-mix(in srgb,var(--surface-2) 60%,transparent)}
+thead th{letter-spacing:.04em}
+/* progress bar */
+.progress{height:14px;border-radius:9px}
+.progress i{box-shadow:0 0 12px color-mix(in srgb,var(--green) 45%,transparent)}
+/* chips slightly softer */
+.chip{border-radius:9px}
+.lotcard .chip,.rc .chip{border-radius:20px}
+/* inbox rows */
+.reqrow{padding:13px 2px}
+.reqrow:hover{background:color-mix(in srgb,var(--surface-2) 45%,transparent);border-radius:10px}
+/* modal premium */
+.modalbg{backdrop-filter:blur(5px);background:rgba(8,14,10,.55)}
+.modal{box-shadow:var(--sh-lg);border-radius:20px;padding:26px}
+.modal h3{font-size:19px;letter-spacing:-.01em}
+.modal .fld input,.modal .fld select,.fld select,.fld input{transition:border-color .14s,box-shadow .14s}
+.modal .fld input:focus,.modal .fld select:focus,.fld input:focus,.fld select:focus{border-color:var(--green);box-shadow:0 0 0 3px var(--ring);outline:none}
+/* panel headers */
+.panel .ph{padding:15px 18px}
+.panel .pb{padding:15px 18px}
+.block .bh h3::before,.panel .ph h3::before{height:15px;box-shadow:0 0 8px color-mix(in srgb,var(--green) 40%,transparent)}
+/* section eyebrow underlines etc kept */
+/* focus visible refinement */
+a:focus-visible,button:focus-visible,select:focus-visible,input:focus-visible{outline:2px solid var(--green);outline-offset:2px;border-radius:6px}
+/* subtle divider between greet and stats */
+.greet{padding-bottom:4px}
+.statgrid{gap:16px;margin:24px 0}
+.mribbon{gap:14px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+<div id="root"></div>
+<div id="toast" aria-live="polite"></div>
+<script>
+"use strict";
+/* ---------------- i18n ---------------- */
+const I = {
+ brand:{lo:"ລາວ ອາໂກຣ ລິ້ງ",en:"Lao Agro Link"},
+ signin:{lo:"ເຂົ້າສູ່ລະບົບ",en:"Sign In"}, register:{lo:"ລົງທະບຽນ",en:"Register"}, explore:{lo:"ເບິ່ງຕະຫຼາດ",en:"Explore Market"},
+ hero_t:{lo:"ຈາກໄຮ່ນາ ສູ່ຕະຫຼາດ, ເຊື່ອມຕໍ່ກັນ.",en:"From Farm to Market, Connected."},
+ hero_p:{lo:"ແພລດຟອມກະສິກຳດິຈິຕອນທີ່ເຊື່ອຖືໄດ້ ເຊື່ອມໂຍງ ຜູ້ຜະລິດ, ຜູ້ຄ້າ, ສາງ, ໂຮງງານ ແລະ ຜູ້ສົ່ງອອກ.",en:"A trusted digital agriculture platform connecting producers, traders, warehouses, processors and exporters."},
+ hero_cta1:{lo:"ລົງທະບຽນໄຮ່ນາ",en:"Register Farm"}, hero_cta2:{lo:"ເບິ່ງຕະຫຼາດ",en:"Explore Marketplace"},
+ trust:{lo:"ໄຮ່ນາທີ່ຢືນຢັນ · ລາຄາໂປ່ງໃສ · ສາງທີ່ເຊື່ອຖືໄດ້ · ສະໜັບສະໜູນໂດຍພາກລັດ",en:"Verified farms · Transparent prices · Trusted warehouses · Government-supported"},
+ how_t:{lo:"ອາໂກຣ ລິ້ງ ເຮັດວຽກແນວໃດ",en:"How Agro Link Works"}, how_p:{lo:"ວົງຈອນຄົບຖ້ວນ ຕັ້ງແຕ່ຕົ້ນນ້ຳ (ໄຮ່ນາ) ຈົນຮອດປາຍນ້ຳ (ສົ່ງອອກ)",en:"A full cycle from upstream (farm) to downstream (export)"},
+ s1:{lo:"ລົງທະບຽນທີ່ດິນ",en:"Register Land"}, s2:{lo:"ວາງແຜນຜະລິດ",en:"Plan Production"}, s3:{lo:"ປູກ & ຕິດຕາມ",en:"Grow & Monitor"}, s4:{lo:"ຂາຍ",en:"Sell"}, s5:{lo:"ເກັບ / ແປຮູບ",en:"Store / Process"}, s6:{lo:"ຄ້າຂາຍ",en:"Trade"}, s7:{lo:"ສົ່ງອອກ",en:"Export"},
+ feat_t:{lo:"ຈຸດເດັ່ນຂອງລະບົບ",en:"What makes it different"},
+ f1t:{lo:"ຕະຫຼາດຫຼາຍມື",en:"Multi-hand market"}, f1p:{lo:"ໂອນກຳມະສິດຜ່ານໃບຝາກສາງ ສິນຄ້າຈິງຢູ່ບ່ອນເກົ່າ ຕິດຕາມຍ້ອນກັບໄດ້ 100%.",en:"Transfer ownership via warehouse receipts — goods stay put, 100% traceable."},
+ f2t:{lo:"ລາຄາພື້ນຖານ (Floor)",en:"Floor Price"}, f2p:{lo:"ຫ້າມຊື້-ຂາຍຕ່ຳກວ່າລາຄາຂັ້ນຕ່ຳ ປົກປ້ອງຊາວກະສິກອນ.",en:"Trades below the floor are blocked, protecting farmers."},
+ f3t:{lo:"ຕະຫຼາດ 3 ຂັ້ນ",en:"Three-tier market"}, f3p:{lo:"ທ້ອງຖິ່ນ → ຂາຍສົ່ງ → ສົ່ງອອກ ພ້ອມກົນໄກກັນຜູກຂາດ.",en:"Local → wholesale → export, with anti-monopoly rules."},
+ login_t:{lo:"ເຂົ້າສູ່ລະບົບ",en:"Sign in"}, login_s:{lo:"ເຂົ້າໃຊ້ AGRO LINK CENTER",en:"Access AGRO LINK CENTER"},
+ email:{lo:"ອີເມວ ຫຼື ເບີໂທ",en:"Email or phone"}, pass:{lo:"ລະຫັດຜ່ານ",en:"Password"},
+ login_demo:{lo:"ໜ້າຈຳລອງ — ບໍ່ຕ້ອງໃສ່ຂໍ້ມູນຈິງ, ກົດເຂົ້າສູ່ລະບົບໄດ້ເລີຍ",en:"Demo screen — no real credentials needed, just click Sign In"},
+ login_btn:{lo:"ເຂົ້າສູ່ລະບົບ",en:"Sign In"}, no_acc:{lo:"ຍັງບໍ່ມີບັນຊີ?",en:"No account yet?"}, or_guest:{lo:"ຫຼື ເບິ່ງຕະຫຼາດແບບຜູ້ເຂົ້າຊົມ",en:"or browse the market as a guest"},
+ tester_lab:{lo:"ໂໝດທົດສອບ · ເຂົ້າໃຊ້ໄດ້ທັນທີ",en:"Tester mode · instant access"},
+ tester_hint:{lo:"ຍັງບໍ່ມີບັນຊີ? ເລືອກບົດບາດເພື່ອທົດລອງໃຊ້ໃນຖານະ Tester ໄດ້ເລີຍ",en:"No account yet? Pick a role to explore instantly as a test user"},
+ tester_btn:{lo:"ເຂົ້າເປັນ Tester",en:"Enter as tester"}, or_div:{lo:"ຫຼື",en:"or"},
+ role_t:{lo:"ເລືອກບົດບາດຂອງທ່ານ",en:"Select Your Role"}, role_p:{lo:"ເລືອກວິທີທີ່ທ່ານໃຊ້ Lao Agro Link",en:"Choose how you use Lao Agro Link"}, back_home:{lo:"← ກັບໜ້າຫຼັກ",en:"← Back to Home"},
+ nav_dash:{lo:"ໜ້າຫຼັກ",en:"Dashboard"}, nav_farm:{lo:"ໄຮ່ນາຂອງຂ້ອຍ",en:"My Farm"}, nav_prod:{lo:"ການຜະລິດ",en:"Production"}, nav_mkt:{lo:"ຕະຫຼາດ",en:"Marketplace"}, nav_wh:{lo:"ສາງສິນຄ້າ",en:"Warehouses"}, nav_trade:{lo:"ການຄ້າ",en:"Trade"}, nav_trace:{lo:"ການຕິດຕາມ",en:"Traceability"}, nav_oversight:{lo:"ພາບລວມກຳກັບ",en:"Oversight"}, nav_inbox:{lo:"ກ່ອງຄຳຂໍ",en:"Inbox"},
+ signout:{lo:"ອອກຈາກລະບົບ",en:"Sign Out"}, switch_role:{lo:"ປ່ຽນບົດບາດ",en:"Switch Role"},
+ greet:{lo:"ສະບາຍດີ",en:"Sabaidee"}, farm_line:{lo:"ໄຮ່ນາ ບ້ານໂພນຮ່ອງ · ແຂວງວຽງຈັນ",en:"Ban Phonhong Farm · Vientiane Province"},
+ active_crop:{lo:"ພືດປັດຈຸບັນ",en:"Active Crop"}, jasmine:{lo:"ເຂົ້າຫອມມະລິ",en:"Jasmine Rice"}, land_area:{lo:"ເນື້ອທີ່ດິນ",en:"Land Area"}, exp_yield:{lo:"ຜົນຜະລິດຄາດຄະເນ",en:"Expected Yield"}, floor:{lo:"ລາຄາພື້ນຖານ",en:"Floor Price"},
+ crop_prog:{lo:"ຄວາມຄືບໜ້າການປູກ",en:"Crop Progress"}, growing:{lo:"ກຳລັງເຕີບໂຕ · ມື້ທີ 75/120",en:"Growing · Day 75/120"}, quick:{lo:"ການກະທຳດ່ວນ",en:"Quick Actions"},
+ qa1:{lo:"ບັນທຶກຜະລິດ",en:"Record Production"}, qa2:{lo:"ຂາຍສິນຄ້າ",en:"Sell Products"}, qa3:{lo:"ເບິ່ງ SLId",en:"View SLId"}, qa4:{lo:"ແຈ້ງສະພາບ",en:"Report Condition"},
+ qa_intake:{lo:"ຮັບວັດຖຸດິບ",en:"Receive Intake"}, qa_convert:{lo:"ແປຮູບ",en:"Process"}, qa_export:{lo:"ຂໍໂຄຕ້າສົ່ງອອກ",en:"Request Export Quota"}, qa_inspect:{lo:"ກວດແປງ",en:"Inspect Field"},
+ verified:{lo:"ຢືນຢັນແລ້ວ",en:"Verified"}, farm_name:{lo:"ຊື່ໄຮ່ນາ",en:"Farm Name"}, owner:{lo:"ເຈົ້າຂອງ",en:"Owner"}, district:{lo:"ເມືອງ / ແຂວງ",en:"District / Province"}, cur_crop:{lo:"ພືດປັດຈຸບັນ",en:"Current Crop"}, land_status:{lo:"ສະຖານະທີ່ດິນ",en:"Land Status"}, active:{lo:"ໃຊ້ງານ",en:"Active"}, prod_hist:{lo:"ປະຫວັດການຜະລິດ",en:"Production History"},
+ lifecycle:{lo:"ວົງຈອນການປູກ",en:"Crop Lifecycle"}, lc1:{lo:"ລົງທະບຽນ",en:"Registered"}, lc2:{lo:"ກຽມດິນ",en:"Land Prepared"}, lc3:{lo:"ປູກແລ້ວ",en:"Planted"}, lc4:{lo:"ເຕີບໂຕ",en:"Growing"}, lc5:{lo:"ກວດກາ",en:"Inspection"}, lc6:{lo:"ເກັບກ່ຽວ",en:"Harvest"}, lc7:{lo:"ຂາຍ",en:"Sold"},
+ planned:{lo:"ຜົນຜະລິດຕາມແຜນ",en:"Planned Yield"}, projected:{lo:"ຄາດຄະເນ (AI)",en:"Projected (AI)"}, actual:{lo:"ຕົວຈິງ (ຮອດປັດຈຸບັນ)",en:"Actual (so far)"}, harvest_pending:{lo:"ລໍຖ້າເກັບກ່ຽວ",en:"Harvest pending"},
+ mkt_head:{lo:"ຕະຫຼາດຫຼາຍມື",en:"Multi-hand Marketplace"}, mkt_sub:{lo:"ໂອນກຳມະສິດຜ່ານໃບຝາກສາງ — ຄລິກເລືອກລ໊ອດເພື່ອຊື້-ຂາຍ ແລະ ເບິ່ງສາຍການປ່ຽນມື",en:"Transfer ownership via warehouse receipts — click a lot to trade and view its chain of custody"},
+ tvol:{lo:"ມູນຄ່າຊື້-ຂາຍ",en:"Trade Volume"}, tvol_s:{lo:"ນັບທຸກການໂອນກຳມະສິດ",en:"counts every ownership transfer"}, pstock:{lo:"ສິນຄ້າຕົວຈິງ",en:"Physical Stock"}, pstock_s:{lo:"ຂອງຈິງໃນສາງ (M1+M2)",en:"real goods in warehouse"},
+ quota_lab:{lo:"ໂຄຕ້າສົ່ງອອກ",en:"Export Quota"}, quota_s:{lo:"ຍັງເຫຼືອ",en:"remaining"}, fee_lab:{lo:"ຄ່າຝາກສາງ",en:"Storage Fees"}, lots_in:{lo:"ລ໊ອດໃນລະບົບ",en:"lots in system"},
+ mkt_col:{lo:"ຕະຫຼາດ · ລ໊ອດ",en:"Market · Lots"}, detail_col:{lo:"ລາຍລະອຽດ & ການກະທຳ",en:"Detail & Actions"},
+ tab_ledger:{lo:"ບັນຊີປ່ຽນມື",en:"Ledger"}, tab_log:{lo:"ກິດຈະກຳ/ບລ໊ອກ",en:"Activity"}, tab_ctr:{lo:"ສັນຍາ/Future",en:"Contracts/Futures"},
+ pick_lot:{lo:"← ເລືອກລ໊ອດເພື່ອເບິ່ງສາຍການປ່ຽນມື ແລະ ເຮັດທຸລະກຳ",en:"← Select a lot to view its chain of custody and trade"},
+ goods:{lo:"ສິນຄ້າ",en:"Crop"}, qty_real:{lo:"ປະລິມານ (ຂອງຈິງ)",en:"Quantity (physical)"}, cur_owner:{lo:"ເຈົ້າຂອງປັດຈຸບັນ",en:"Current owner"}, at_wh:{lo:"ຢູ່ສາງ",en:"At warehouse"}, tier:{lo:"ຊັ້ນຕະຫຼາດ",en:"Market tier"}, status:{lo:"ສະຖານະ",en:"Status"},
+ provenance:{lo:"ຕົ້ນທາງ (→ SLId)",en:"Provenance (→ SLId)"}, chain_of:{lo:"ສາຍການປ່ຽນມື",en:"Chain of custody"}, hands:{lo:"ມື",en:"hands"},
+ transfer_lab:{lo:"ຊື້-ຂາຍ / ໂອນກຳມະສິດ (ຂອງຢູ່ສາງເກົ່າ)",en:"Trade / transfer ownership (goods stay in warehouse)"},
+ receiver:{lo:"ຜູ້ຮັບ",en:"Receiver"}, price_kg:{lo:"ລາຄາ/kg",en:"Price/kg"},
+ btn_spot:{lo:"ຊື້ທັນທີ (Spot)",en:"Buy now (Spot)"}, btn_contract:{lo:"ເຮັດສັນຍາ (ມັດຈຳ 50%)",en:"Contract (50% deposit)"}, btn_future:{lo:"ຕັ້ງຄຳສັ່ງ Future",en:"Place Future order"},
+ btn_post:{lo:"ຕັ້ງຂາຍ",en:"Post offer"}, btn_convert:{lo:"ແປຮູບ (5:1)",en:"Process (5:1)"}, btn_withdraw:{lo:"ຖອນອອກ (ຄ່າຝາກ)",en:"Withdraw (fee)"}, btn_export:{lo:"ສົ່ງອອກ",en:"Export"},
+ closed:{lo:"ລ໊ອດນີ້ປິດວົງຈອນແລ້ວ (ຖອນ/ສົ່ງອອກ)",en:"This lot has closed its cycle"}, no_ledger:{lo:"ຍັງບໍ່ມີການປ່ຽນມື — ລອງໂອນກຳມະສິດເບິ່ງ",en:"No transfers yet — try transferring ownership"},
+ pm_note:{lo:"Future = ຊື້ອັດຕະໂນມັດເມື່ອລາຄາຕະຫຼາດ ≤ trigger · Contract = Smart Contract 50/50",en:"Future = auto-buy when market ≤ trigger · Contract = Smart Contract 50/50"},
+ mkt_price:{lo:"ລາຄາຕະຫຼາດ (ຈຳລອງ)",en:"Market price (sim)"}, no_ctr:{lo:"ຍັງບໍ່ມີສັນຍາ/Future — ລອງເຮັດສັນຍາ ຫຼື ຕັ້ງ Future",en:"No contracts/futures yet"},
+ c_await:{lo:"ລໍຖ້າສົ່ງມອບ",en:"Awaiting delivery"}, c_settled:{lo:"ຊຳລະຄົບ",en:"Settled"}, c_deposit:{lo:"ມັດຈຳ 50%",en:"50% deposit"}, btn_settle:{lo:"ສົ່ງມອບ + ຊຳລະ 50%",en:"Deliver + pay 50%"},
+ f_pending:{lo:"ລໍ trigger",en:"Pending trigger"}, f_trigger:{lo:"trigger ≤",en:"trigger ≤"},
+ escrow_held:{lo:"ມັດຈຳຄ້າງ (escrow)",en:"Escrow held"},
+ wh_head:{lo:"ສາງເວຍງຈັນ",en:"Vientiane Rice Warehouse"}, wh_trusted:{lo:"ສາງທີ່ເຊື່ອຖືໄດ້",en:"Trusted Warehouse"},
+ purch_today:{lo:"ຮັບຊື້ມື້ນີ້",en:"Purchased Today"}, avail_cap:{lo:"ຄວາມຈຸທີ່ວ່າງ",en:"Available Capacity"}, pend_del:{lo:"ຂົນສົ່ງທີ່ຄ້າງ",en:"Pending Deliveries"}, avg_paid:{lo:"ລາຄາຊື້ສະເລ່ຍ",en:"Avg Price Paid"}, incoming:{lo:"ການຂົນສົ່ງເຂົ້າ",en:"Incoming Deliveries"}, receive:{lo:"ຮັບເຂົ້າ",en:"Receive"},
+ col_farm:{lo:"ໄຮ່ນາ / SLId",en:"Farm / SLId"}, col_crop:{lo:"ພືດ",en:"Crop"}, col_qty:{lo:"ຈຳນວນ",en:"Qty"}, col_eta:{lo:"ຮອດເວລາ",en:"ETA"},
+ total_trades:{lo:"ທຸລະກຳມື້ນີ້",en:"Trades Today"}, total_value:{lo:"ມູນຄ່າລວມ",en:"Total Value"}, active_wh:{lo:"ສາງທີ່ໃຊ້ງານ",en:"Active Warehouses"}, price_sum:{lo:"ສະຫຼຸບລາຄາ",en:"Price Summary"}, top_prov:{lo:"ແຂວງນຳໜ້າ",en:"Top Provinces"}, avg:{lo:"ສະເລ່ຍ",en:"Average"}, high:{lo:"ສູງສຸດ",en:"High"}, low:{lo:"ຕ່ຳສຸດ",en:"Low"}, volume:{lo:"ປະລິມານ",en:"Volume"},
+ trace_head:{lo:"ຕິດຕາມລ໊ອດສິນຄ້າ",en:"Batch Traceability"}, lot_no:{lo:"ເລກລ໊ອດ",en:"Lot Number"},
+ assume:{lo:"ສົມມຸດຖານ: Floor = ຂັ້ນຕ່ຳ · ໂອນບໍ່ຈຳກັດ · ຄ່າຝາກ ₭50/T/ວັນ · Smart Contract = rule engine · Contract 50/50 · Future trigger",en:"Assumptions: Floor = minimum · unlimited transfers · storage ₭50/T/day · Smart Contract = rule engine"},
+ guest_note:{lo:"ໂໝດຜູ້ເຂົ້າຊົມ — ລົງທະບຽນເພື່ອຊື້-ຂາຍ",en:"Guest mode — register to trade"},
+ gov_note:{lo:"ໂໝດກຳກັບ (read-only) — ເບິ່ງໄດ້ ແຕ່ຊື້-ຂາຍບໍ່ໄດ້",en:"Oversight mode (read-only) — view only, no trading"},
+ gov_head:{lo:"ພາບລວມການກຳກັບ",en:"Oversight Overview"}, gov_sub:{lo:"ຕິດຕາມການຄ້າແບບ Real-time · ຂໍ້ມູນມະຫາພາກ",en:"Real-time trade monitoring · macro data"},
+ n_trades:{lo:"ຈຳນວນທຸລະກຳ",en:"Transactions"}, n_lots:{lo:"ລ໊ອດໃນລະບົບ",en:"Lots in system"}, quota_used:{lo:"ໂຄຕ້າໃຊ້ໄປ",en:"Quota used"}, compliance:{lo:"ການປະຕິບັດຕາມ",en:"Compliance"}, all_lots:{lo:"ລ໊ອດທັງໝົດ (ກຳກັບ)",en:"All lots (oversight)"},
+ no_perm_trade:{lo:"ບົດບາດນີ້ບໍ່ມີສິດຊື້-ຂາຍ",en:"This role cannot trade"},
+};
+const ROLES=[
+ {id:'farmer',lo:'ຊາວກະສິກອນ',en:'Farmer',icon:'sprout'},{id:'livestock',lo:'ຜູ້ລ້ຽງສັດ',en:'Livestock Farmer',icon:'cow'},{id:'field',lo:'ເຈົ້າໜ້າທີ່ພາກສະໜາມ',en:'Field Officer',icon:'clipboard'},
+ {id:'trader',lo:'ຜູ້ຄ້າພາຍໃນ',en:'Domestic Trader',icon:'handshake'},{id:'warehouse',lo:'ຜູ້ຄຸ້ມຄອງສາງ',en:'Warehouse Operator',icon:'warehouse'},{id:'factory',lo:'ຜູ້ຄຸ້ມຄອງໂຮງງານ',en:'Factory Operator',icon:'factory'},
+ {id:'exporter',lo:'ຜູ້ສົ່ງອອກ',en:'Exporter',icon:'ship'},{id:'logistics',lo:'ຜູ້ຂົນສົ່ງ',en:'Logistics Operator',icon:'truck'},{id:'province',lo:'ພະແນກຂັ້ນແຂວງ',en:'Provincial Dept.',icon:'building'},
+ {id:'ministry',lo:'ກະຊວງ',en:'Ministry',icon:'bank'},{id:'tradedept',lo:'ກົມການຄ້າ',en:'Trade Department',icon:'chart'},{id:'admin',lo:'ຜູ້ດູແລລະບົບ',en:'Administrator',icon:'shield'},
+];
+/* ---- RBAC permissions ---- */
+const PERMS={
+ farmer:   {nav:['dashboard','farm','production','market','trace'], trade:1,convert:0,export:0,gov:0,dash:'farm'},
+ livestock:{nav:['dashboard','farm','production','market','trace'], trade:1,convert:0,export:0,gov:0,dash:'farm'},
+ field:    {nav:['dashboard','production','market','trace'], trade:0,convert:0,export:0,gov:0,dash:'field'},
+ trader:   {nav:['dashboard','market','warehouse','trade','trace'], trade:1,convert:0,export:0,gov:0,dash:'op'},
+ warehouse:{nav:['dashboard','warehouse','market','trade','trace'], trade:1,convert:0,export:0,gov:0,dash:'op'},
+ factory:  {nav:['dashboard','warehouse','production','market','trade','trace'], trade:1,convert:1,export:0,gov:0,dash:'factory'},
+ exporter: {nav:['dashboard','market','warehouse','trade','trace'], trade:1,convert:0,export:1,gov:0,dash:'exporter'},
+ logistics:{nav:['dashboard','warehouse','trade','trace'], trade:0,convert:0,export:0,gov:0,dash:'op'},
+ province: {nav:['dashboard','oversight','market','trade','trace'], trade:0,convert:0,export:0,gov:1,dash:'gov'},
+ ministry: {nav:['dashboard','oversight','market','trade','trace'], trade:0,convert:0,export:0,gov:1,dash:'gov'},
+ tradedept:{nav:['dashboard','oversight','market','trade','trace'], trade:0,convert:0,export:0,gov:1,dash:'gov'},
+ admin:    {nav:['dashboard','farm','production','market','warehouse','trade','trace','oversight'], trade:1,convert:1,export:1,gov:1,dash:'gov'},
+ guest:    {nav:['dashboard','market','trace'], trade:0,convert:0,export:0,gov:0,guest:1,dash:'op'},
+};
+function perm(){return PERMS[A.role]||PERMS.farmer;}
+const NAV=[
+ {id:'dashboard',k:'nav_dash',icon:'grid'},{id:'oversight',k:'nav_oversight',icon:'shield'},{id:'farm',k:'nav_farm',icon:'pin'},{id:'production',k:'nav_prod',icon:'trend'},
+ {id:'market',k:'nav_mkt',icon:'store'},{id:'warehouse',k:'nav_wh',icon:'warehouse'},{id:'trade',k:'nav_trade',icon:'chart'},{id:'trace',k:'nav_trace',icon:'scan'},{id:'inbox',k:'nav_inbox',icon:'inbox'},
+];
+const ICON={
+ sprout:'<path d="M7 20h10M12 20V10M12 10C12 6 9 4 4 4c0 4 3 6 8 6zM12 10c0-3 2-5 6-5 0 3-2 5-6 5z"/>',cow:'<path d="M4 8c0 4 3 8 8 8s8-4 8-8M4 8l2-3M20 8l-2-3M9 11h.01M15 11h.01M10 15c1 1 3 1 4 0"/>',clipboard:'<rect x="6" y="4" width="12" height="16" rx="2"/><path d="M9 4h6v3H9zM9 12h6M9 16h4"/>',handshake:'<path d="M8 12l3 3 2-2 4 4M3 10l4-4 3 2 4-3 4 3 3 3M8 15l-2 2"/>',warehouse:'<path d="M3 21V9l9-5 9 5v12M7 21v-7h10v7M7 14h10"/>',factory:'<path d="M3 21V11l6 4V11l6 4V7l6 4v10zM7 21v-3M12 21v-3M17 21v-3"/>',ship:'<path d="M3 16l9 4 9-4M5 16V8h14v8M9 8V5h6v3M12 3v2"/>',truck:'<path d="M2 6h11v9H2zM13 9h4l3 3v3h-7M6 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM17 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>',building:'<path d="M5 21V4h14v17M9 8h1M14 8h1M9 12h1M14 12h1M9 16h1M14 16h1"/>',bank:'<path d="M3 9l9-5 9 5M5 9v9M19 9v9M9 9v9M15 9v9M3 21h18"/>',chart:'<path d="M4 20V4M4 20h16M8 16v-4M12 16V8M16 16v-7"/>',shield:'<path d="M12 3l8 3v6c0 5-4 8-8 9-4-1-8-4-8-9V6z"/>',grid:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',pin:'<path d="M12 21s7-6 7-11a7 7 0 10-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',trend:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',store:'<path d="M4 9h16l-1-4H5zM4 9v11h16V9M9 20v-6h6v6"/>',scan:'<path d="M4 7V4h3M20 7V4h-3M4 17v3h3M20 17v3h-3M7 12h10"/>',plus:'<path d="M12 5v14M5 12h14"/>',bag:'<path d="M6 8h12l-1 12H7zM9 8V6a3 3 0 016 0v2"/>',qr:'<rect x="4" y="4" width="6" height="6"/><rect x="14" y="4" width="6" height="6"/><rect x="4" y="14" width="6" height="6"/><path d="M14 14h3v3M20 14v6M17 20h3"/>',alert:'<path d="M12 3l9 16H3zM12 10v4M12 17h.01"/>',out:'<path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>',swap:'<path d="M7 4L3 8l4 4M3 8h13M17 20l4-4-4-4M21 16H8"/>',sun:'<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6L19 19M5 19l1.4-1.4M17.6 6.4L19 5"/>',moon:'<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>',inbox:'<path d="M3 12h5l2 3h4l2-3h5M4 4h16a1 1 0 011 1v14a1 1 0 01-1 1H4a1 1 0 01-1-1V5a1 1 0 011-1z"/>',
+};
+const PARTY={
+ SUN_A:{name:{lo:'ສວນ A',en:'Farm A'},kind:'farmer'},SUN_B:{name:{lo:'ສວນ B',en:'Farm B'},kind:'farmer'},SUN_C:{name:{lo:'ສວນ C',en:'Farm C'},kind:'farmer'},
+ TRD_1:{name:{lo:'ຜູ້ຄ້າ ວິໄລ',en:'Trader Vilay'},kind:'trader'},TRD_2:{name:{lo:'ຜູ້ຄ້າ ສົມພອນ',en:'Trader Somphone'},kind:'trader'},
+ FAC_1:{name:{lo:'ໂຮງສີ ຫຼວງ',en:'Luang Mill'},kind:'factory'},EXP_1:{name:{lo:'ສົ່ງອອກ ເມກອງ',en:'Mekong Export'},kind:'export'},
+ WH_1:{name:{lo:'ສາງ ວິໄລ',en:'Vilay Warehouse'},kind:'warehouse'},
+};
+const FLOOR=4200, STORAGE_RATE=50;
+let A, seq;
+function lang(){return A.lang;} function isLo(){return A.lang==='lo';}
+function t(k){const e=I[k];return e?(e[A.lang]||e.en):k;}
+function pn(id){const p=PARTY[id];return p?(p.name[A.lang]||p.name.en):id;}
+function svg(name,sz){sz=sz||20;return `<svg width="${sz}" height="${sz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${ICON[name]||''}</svg>`;}
+function fmt(n){return n.toLocaleString('en-US');}
+function money(n){return '₭'+fmt(Math.round(n));}
+function loadLang(){try{return localStorage.getItem('agro_lang')||'lo';}catch(e){return 'lo';}}
+function saveLang(l){try{localStorage.setItem('agro_lang',l);}catch(e){}}
+function toast(m,k){const el=document.createElement('div');el.className='tmsg '+(k||'');el.textContent=m;document.getElementById('toast').appendChild(el);setTimeout(()=>el.remove(),2500);}
+
+function seedTrade(){
+ seq=0;
+ A.tradeVolume=0; A.storageFees=0; A.escrowHeld=0; A.quota={granted:2400,consumed:0}; A.floor=FLOOR;
+ A.day=3; A.selected=null; A.sideView='ledger'; A.marketPrice=4500;
+ A.warehouses={W1:{name:{lo:'ຄລັງລວມ ວຽງຈັນ',en:'Vientiane Hub'},tier:1},W2:{name:{lo:'ສາງ ຫຼວງ',en:'Luang Store'},tier:2}};
+ A.wallets={TRD_1:120e6,TRD_2:90e6,FAC_1:400e6,EXP_1:600e6,SUN_A:20e6,SUN_B:20e6,SUN_C:20e6};
+ A.lots={}; A.offers=[]; A.ledger=[]; A.log=[]; A.contracts=[]; A.futures=[];
+ A.requests=[]; A.reqSeq=0; A.certs={}; A.slids=[]; A.wallets.WH_1=50e6;
+ mkLot('L-1024',{crop:{lo:'ເຂົ້າຫອມມະລິ',en:'Jasmine Rice'},qty:20.5,wh:'W1',holder:'TRD_1',tier:2,origin:['SL-A · ສວນ A','SL-B · ສວນ B','SL-C · ສວນ C'],since:1,zb:true,note:{lo:'ລວມຈາກ 3 ສວນ (merge)',en:'Merged from 3 farms'}});
+ mkLot('L-1025',{crop:{lo:'ເຂົ້າໜຽວ',en:'Sticky Rice'},qty:8.0,wh:'W1',holder:'SUN_B',tier:1,origin:['SL-B · ສວນ B'],since:2,zb:true,note:{lo:'ຈາກສວນໂດຍກົງ',en:'Direct from farm'}});
+ mkLot('L-1026',{crop:{lo:'ມັນສຳປະຫຼັງສົດ',en:'Fresh Cassava'},qty:12.0,wh:'W2',holder:'TRD_2',tier:2,origin:['SL-C · ສວນ C'],since:3,zb:true,note:{lo:'ລໍເຂົ້າໂຮງງານ (ອັດຕາ 5:1)',en:'Awaiting factory (5:1)'}});
+ A.offers.push({lot:'L-1024',price:4500,model:'spot',status:'open'});
+ A.offers.push({lot:'L-1025',price:4200,model:'contract',status:'open'});
+ logSys(isLo()?('ເລີ່ມລະບົບ · ວັນທີ '+A.day+' · Floor '+money(A.floor)+'/kg'):('Started · day '+A.day));
+}
+function mkLot(id,o){A.lots[id]={id,crop:o.crop,qty:o.qty,wh:o.wh,holder:o.holder,tier:o.tier||1,origin:o.origin,since:o.since,zb:o.zb,note:o.note||null,state:'IN_WAREHOUSE',reserved:false,parents:o.parents||[]};}
+function logSys(x){A.log.unshift({k:'sys',t:x,at:A.day});} function logOk(x){A.log.unshift({k:'ok',t:x,at:A.day});} function logNo(x){A.log.unshift({k:'no',t:x,at:A.day});} function logMv(x){A.log.unshift({k:'mv',t:x,at:A.day});}
+function pushLedger(e){seq++;A.ledger.unshift(Object.assign({seq,at:A.day},e));}
+
+/* ---------------- trade actions ---------------- */
+function doTransfer(lotId,toId,price,label){
+ const lot=A.lots[lotId]; if(!lot) return false;
+ if(price<A.floor){logNo(isLo()?`ປະຕິເສດ: ${money(price)}/kg ຕ່ຳກວ່າ Floor`:`Rejected: ${money(price)}/kg below Floor`);toast(isLo()?'ບລ໊ອກ: ຕ່ຳກວ່າ Floor':'Blocked: below Floor','bad');return false;}
+ if(!['IN_WAREHOUSE','TRADED','PROCESSED'].includes(lot.state)){logNo((isLo()?'ຍັງຂາຍບໍ່ໄດ້ ':'Not sellable ')+lotId+(isLo()?' — ຕ້ອງເຂົ້າສາງກ່ອນ':' — must be in warehouse'));toast(isLo()?'ຕ້ອງເຂົ້າສາງກ່ອນຂາຍ':'Must be in warehouse first','bad');return false;}
+ const from=lot.holder; lot.holder=toId; lot.state='TRADED'; lot.reserved=false;
+ A.tradeVolume+=price*lot.qty*1000;
+ const off=A.offers.find(o=>o.lot===lotId&&o.status==='open'); if(off) off.status='filled';
+ pushLedger({type:'transfer',lot:lotId,from,to:toId,qty:lot.qty,price});
+ logOk((label||(isLo()?'ໂອນກຳມະສິດ ':'Transfer '))+lotId+' · '+pn(from)+' → '+pn(toId)+' @ '+money(price)+'/kg');
+ return true;
+}
+function payFor(buyer,seller,value){A.wallets[buyer]=(A.wallets[buyer]||0)-value;A.wallets[seller]=(A.wallets[seller]||0)+value;pushLedger({type:'payout',lot:'—',from:buyer,to:seller,qty:0,price:0,amount:value});logMv((isLo()?'ຊຳລະເງິນ ':'Paid ')+money(value)+' · '+pn(buyer)+' → '+pn(seller));}
+function transferOwnership(lotId,toId,price){
+ const lot=A.lots[lotId]; if(!lot){render();return;}
+ const value=price*lot.qty*1000, seller=lot.holder;
+ if((A.wallets[toId]||0)<value){toast(isLo()?'ກະເປົາເງິນຜູ້ຊື້ບໍ່ພຽງພໍ':'Buyer wallet too low','bad');logNo((isLo()?'ຊື້ບໍ່ໄດ້: ເງິນບໍ່ພຽງພໍ ':'Insufficient funds ')+pn(toId));render();return;}
+ if(doTransfer(lotId,toId,price)){ payFor(toId,seller,value); toast(isLo()?'ໂອນ + ຊຳລະເງິນສຳເລັດ (payout ເຂົ້າຜູ້ຂາຍ)':'Transferred + paid','good'); } render();
+}
+function postOffer(lotId,price,model){
+ if(price<A.floor){toast(isLo()?'ຕັ້ງລາຄາຕ່ຳກວ່າ Floor ບໍ່ໄດ້':'Cannot post below Floor','bad');logNo((isLo()?'ຕັ້ງຂາຍບໍ່ໄດ້: ':'Post rejected: ')+money(price)+' < Floor');render();return;}
+ A.offers=A.offers.filter(o=>!(o.lot===lotId&&o.status==='open'));
+ A.offers.push({lot:lotId,price,model,status:'open'});
+ logOk((isLo()?'ຕັ້ງຂາຍ ':'Posted ')+lotId+' @ '+money(price)+'/kg');
+ toast(isLo()?'ຕັ້ງຂາຍເຂົ້າຕະຫຼາດ':'Posted to market','good');render();
+}
+function withdraw(lotId){
+ const lot=A.lots[lotId];const days=Math.max(1,A.day-lot.since);const fee=days*STORAGE_RATE*lot.qty;
+ A.storageFees+=fee; lot.state='WITHDRAWN';
+ pushLedger({type:'withdraw',lot:lotId,from:lot.holder,to:lot.holder,qty:lot.qty,fee});
+ logMv((isLo()?'ຖອນອອກ ':'Withdraw ')+lotId+' · '+days+(isLo()?' ວັນ · ຄ່າຝາກ ':' d · fee ')+money(fee));
+ A.selected=null;toast(isLo()?'ຖອນອອກ + ຄິດຄ່າຝາກ':'Withdrawn + storage fee','');render();
+}
+function convert(lotId){
+ const lot=A.lots[lotId];const ratio=5,out=+(lot.qty/ratio).toFixed(2);const nid='L-'+(1030+Object.keys(A.lots).length);
+ mkLot(nid,{crop:{lo:'ແປ້ງມັນ',en:'Cassava Starch'},qty:out,wh:'W2',holder:lot.holder,tier:2,origin:lot.origin.slice(),since:A.day,zb:lot.zb,note:{lo:'ແປຮູບຈາກ '+lotId+' (5:1)',en:'Processed from '+lotId+' (5:1)'},parents:[lotId]});
+ lot.state='PROCESSED';
+ pushLedger({type:'convert',lot:nid,from:lotId,to:lot.holder,qty:out});
+ logMv((isLo()?'ແປຮູບ ':'Process ')+lotId+' → '+nid+' · '+lot.qty+'T → '+out+'T (5:1)');
+ A.selected=nid;toast(isLo()?'ແປຮູບສຳເລັດ':'Processed','good');render();
+}
+function exportLot(lotId){
+ const lot=A.lots[lotId];const remain=A.quota.granted-A.quota.consumed;
+ if(lot.tier<2){logNo((isLo()?'ປະຕິເສດສົ່ງອອກ ':'Export rejected ')+lotId+(isLo()?': ຕ້ອງຜ່ານຕະຫຼາດ 2':': need tier 2'));toast(isLo()?'ບລ໊ອກ: ຍັງບໍ່ຮອດຕະຫຼາດ 3':'Blocked: not tier 3','bad');render();return;}
+ if(lot.qty>remain){logNo((isLo()?'ປະຕິເສດສົ່ງອອກ ':'Export rejected ')+lotId+(isLo()?`: ເກີນໂຄຕ້າ (ເຫຼືອ ${remain}T)`:`: over quota`));toast(isLo()?'ບລ໊ອກ: ເກີນໂຄຕ້າ':'Blocked: over quota','bad');render();return;}
+ A.quota.consumed+=lot.qty; lot.state='EXPORTED';
+ pushLedger({type:'export',lot:lotId,from:lot.holder,to:(isLo()?'ດ່ານສົ່ງອອກ':'Export gate'),qty:lot.qty});
+ logOk((isLo()?'ສົ່ງອອກ ':'Export ')+lotId+' · '+lot.qty+'T');
+ A.selected=null;toast(isLo()?'ສົ່ງອອກສຳເລັດ':'Exported','good');render();
+}
+/* --- Contract (Smart Contract 50/50) --- */
+function createContract(lotId,buyer,price){
+ const lot=A.lots[lotId]; if(price<A.floor){toast(isLo()?'ລາຄາຕ່ຳກວ່າ Floor':'Below Floor','bad');logNo((isLo()?'ສັນຍາບໍ່ໄດ້: ':'Contract rejected: ')+money(price)+' < Floor');render();return;}
+ const value=price*lot.qty*1000, dep=value/2;
+ if((A.wallets[buyer]||0)<dep){toast(isLo()?'ກະເປົາເງິນຜູ້ຊື້ບໍ່ພຽງພໍວາງມັດຈຳ':'Buyer wallet too low for deposit','bad');logNo((isLo()?'ສັນຍາບໍ່ໄດ້: ມັດຈຳບໍ່ພຽງພໍ ':'Contract rejected: deposit ')+pn(buyer));render();return;}
+ A.wallets[buyer]-=dep; A.escrowHeld+=dep; lot.reserved=true;
+ A.contracts.unshift({lot:lotId,seller:lot.holder,buyer,price,qty:lot.qty,deposit:dep,value,status:'awaiting',at:A.day});
+ logOk((isLo()?'ເຮັດສັນຍາ ':'Contract ')+lotId+' · '+pn(buyer)+' · '+(isLo()?'ວາງມັດຈຳ ':'deposit ')+money(dep));
+ A.sideView='ctr'; toast(isLo()?'ເຮັດສັນຍາ + ວາງມັດຈຳ 50%':'Contract created + 50% deposit','good');render();
+}
+function settleContract(i){
+ const c=A.contracts[i]; if(!c||c.status!=='awaiting') return;
+ const remaining=c.value-c.deposit;
+ if((A.wallets[c.buyer]||0)<remaining){toast(isLo()?'ຍອດເງິນຄົງເຫຼືອບໍ່ພຽງພໍຊຳລະ':'Insufficient to settle','bad');return;}
+ A.wallets[c.buyer]-=remaining; A.escrowHeld-=c.deposit; A.wallets[c.seller]=(A.wallets[c.seller]||0)+c.value;
+ doTransfer(c.lot,c.buyer,c.price,isLo()?'ສົ່ງມອບສັນຍາ ':'Settle contract ');
+ c.status='settled';
+ logOk((isLo()?'ຊຳລະຄົບ ':'Settled ')+c.lot+' · '+pn(c.buyer)+' · '+money(c.value));
+ toast(isLo()?'ສົ່ງມອບ + ຊຳລະຄົບ + ໂອນກຳມະສິດ':'Delivered + paid + ownership transferred','good');render();
+}
+/* --- Future (trigger) --- */
+function createFuture(lotId,buyer,trigger){
+ if(trigger<A.floor){toast(isLo()?'trigger ຕ້ອງ ≥ Floor':'trigger must be ≥ Floor','bad');render();return;}
+ A.futures.unshift({lot:lotId,buyer,trigger,status:'pending',at:A.day});
+ logOk((isLo()?'ຕັ້ງ Future ':'Future ')+lotId+' · '+pn(buyer)+' · '+(isLo()?'ຊື້ເມື່ອ ≤ ':'buy when ≤ ')+money(trigger));
+ A.sideView='ctr'; toast(isLo()?'ຕັ້ງຄຳສັ່ງ Future ສຳເລັດ':'Future order placed','good');render();
+}
+function tickMarket(delta){
+ A.marketPrice=Math.max(3800,Math.min(5200,A.marketPrice+delta));
+ // fire pending futures where market <= trigger
+ A.futures.forEach(f=>{
+   if(f.status==='pending' && A.marketPrice<=f.trigger){
+     const lot=A.lots[f.lot];
+     if(lot && lot.state!=='EXPORTED' && lot.state!=='WITHDRAWN'){
+       const fp=Math.max(A.floor,Math.round(A.marketPrice)), val=fp*lot.qty*1000, seller=lot.holder;
+       if((A.wallets[f.buyer]||0)>=val){ const ok=doTransfer(f.lot,f.buyer,fp,isLo()?'Future ຍິງ ':'Future fired '); if(ok){ payFor(f.buyer,seller,val); f.status='fired'; toast(isLo()?('Future ຍິງ! '+f.lot+' ທີ່ '+money(fp)):('Future fired '+f.lot),'good'); } }
+     } else { f.status='void'; }
+   }
+ });
+ render();
+}
+
+/* ---------------- routing ---------------- */
+function go(hash){location.hash=hash;}
+function currentRoute(){
+ const parts=(location.hash||'#/').replace(/^#/,'').split('/').filter(Boolean);
+ if(parts[0]==='login') return {screen:'login'};
+ if(parts[0]==='roles') return {screen:'roles'};
+ if(parts[0]==='app'){ if(!A.role) return {screen:'roles'}; let nav=parts[1]||'dashboard'; if(!perm().nav.includes(nav) && !(nav==='inbox'&&A.role!=='guest')) nav=perm().nav[0]; return {screen:'app',nav}; }
+ return {screen:'landing'};
+}
+function render(){
+ const r=currentRoute();const root=document.getElementById('root');
+ if(r.screen==='landing') root.innerHTML=vLanding();
+ else if(r.screen==='login') root.innerHTML=vLogin();
+ else if(r.screen==='roles') root.innerHTML=vRoles();
+ else if(r.screen==='app') root.innerHTML=vApp(r.nav);
+ document.documentElement.lang=A.lang;
+}
+function langToggle(){return `<div class="lng" role="group" aria-label="language"><button data-lang="lo" aria-pressed="${A.lang==='lo'}">ລາວ</button><button data-lang="en" aria-pressed="${A.lang==='en'}">EN</button></div>`;}
+function logo(sz){return `<span class="dot" aria-hidden="true"><svg width="${sz||15}" height="${sz||15}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/></svg></span>`;}
+/* ----- landing / login / roles ----- */
+/* theme */
+function loadTheme(){try{return localStorage.getItem('agro_theme')||'dark';}catch(e){return 'dark';}}
+function saveTheme(x){try{localStorage.setItem('agro_theme',x);}catch(e){}}
+function applyTheme(){document.documentElement.setAttribute('data-theme',A.theme);}
+function themeToggle(){return `<button class="thm" data-theme-toggle aria-label="theme">${A.theme==='dark'?svg('sun',17):svg('moon',17)}</button>`;}
+/* landing content (bilingual) */
+const LP={
+ platform:{lo:'ແພລດຟອມຖານຂໍ້ມູນກະສິກຳແຫ່ງຊາດ',en:'National agri-data platform'},
+ h1a:{lo:'ຫັນປ່ຽນຕ່ອງໂສ້ການຄ້າກະສິກຳ',en:'Transforming the agri-trade chain'},
+ h1b:{lo:'ສູ່ຍຸກດິຈິຕອນ ໂປ່ງໃສ ຍືນຍົງ',en:'into a transparent, sustainable digital era'},
+ lead:{lo:'ແພລດຟອມກາງ ເຊື່ອມໂຍງທຸກມິຕິຂອງການຜະລິດ, ການແປຮູບ ແລະ ການສົ່ງອອກ ແບບຄົບວົງຈອນ.',en:'A central platform connecting every dimension of production, processing and export — end to end.'},
+ s1eye:{lo:'ຂໍ້ມູນຈາກລະບົບ · ອັບເດດສົດ',en:'Live from the system'},
+ s1title:{lo:'ແພລດຟອມໃນຕົວເລກ',en:'The platform in numbers'},
+ s2eye:{lo:'ໃນຫົວໃຈຂອງລະບົບ',en:'At the core'},
+ s2a:{lo:'ມາດຕະການຄຸ້ມຄອງ',en:'Administrative controls'},
+ s2b:{lo:'ທີ່ເຊື່ອມໂຍງທຸກມິຕິການຄ້າ',en:'that connect every trade dimension'},
+ s2lead:{lo:'Lao Agro Link ບໍ່ແມ່ນພຽງໂປຣແກຣມອະນຸມັດເອກະສານ ແຕ່ເປັນລະບົບນິເວດດິຈິຕອນ ທີ່ຝັງເລິກເຂົ້າໃນຕ່ອງໂສ້ອຸປະທານທັງໝົດ.',en:'Lao Agro Link is not merely a document-approval tool but a digital ecosystem woven through the whole supply chain.'},
+ s3eye:{lo:'ກວດສອບຍ້ອນຫຼັງ · ໂປ່ງໃສ · ເຊື່ອຖືໄດ້',en:'Traceable · transparent · trusted'},
+ s3lead:{lo:'7 ກຸ່ມສິນຄ້າເປົ້າໝາຍໄລຍະທີ 1',en:'7 target commodity groups · phase 1'},
+ finalTitle:{lo:'ພ້ອມເຂົ້າຮ່ວມລະບົບແລ້ວບໍ?',en:'Ready to join the platform?'},
+ finalLead:{lo:'ລົງທະບຽນ ຫຼື ເລືອກບົດບາດ ເພື່ອເລີ່ມໃຊ້ງານ',en:'Register or pick a role to get started'},
+ join:{lo:'ລົງທະບຽນມາໃຊ້ລະບົບ',en:'Register to join'},
+ market:{lo:'ຕະຫຼາດສິນຄ້າ',en:'Explore market'},
+};
+function lpTxt(k){const e=LP[k];return e?(e[A.lang]||e.en):k;}
+const LP_RIBBON=[{v:'0%',lo:'Zero-Burn',en:'Zero-Burn'},{v:'18',lo:'ແຂວງທົ່ວປະເທດ',en:'provinces'},{v:'NSWA+',lo:'ພາສີປະຕູດຽວ',en:'single window'},{v:'100%',lo:'Traceability',en:'Traceability'},{v:'>$4.0B',lo:'ມູນຄ່າຊື້-ຂາຍ',en:'trade value'},{v:'45,230+',lo:'ຄອບຄົວຊາວກະສິກອນ',en:'farming families'}];
+const LP_STATS=[
+ {icon:'sprout',tone:'green',v:'24',unit:'',lo:'ຄອບຄົວຊາວກະສິກອນ',en:'farming families',sub_lo:'ລົງທະບຽນເຂົ້າໃຊ້ລະບົບແລ້ວ',sub_en:'registered on the system',pct:70},
+ {icon:'factory',tone:'blue',v:'33',unit:'',lo:'ໂຮງງານ ແລະ ສາງ',en:'factories & warehouses',sub_lo:'ເຊື່ອມໂຍງຕ່ອງໂສ້ການແປຮູບ',sub_en:'linked in the processing chain',pct:55},
+ {icon:'building',tone:'purple',v:'20',unit:'',lo:'ບໍລິສັດນຳເຂົ້າ-ສົ່ງອອກ',en:'import-export firms',sub_lo:'ດຳເນີນການຄ້າຂ້າມແດນ',sub_en:'running cross-border trade',pct:45},
+ {icon:'pin',tone:'gold',v:'577',unit:'ha',lo:'ເນື້ອທີ່ຂຶ້ນທະບຽນ GPS',en:'ha registered by GPS',sub_lo:'ຢືນຢັນດ້ວຍ GPS Polygon',sub_en:'verified via GPS polygon',pct:60},
+];
+const LP_FEATURES=[
+ {icon:'pin',tone:'green',lo:'ຕິດຕາມແຫຼ່ງກຳເນີດ ແລະ ພິກັດທີ່ດິນ',en:'Origin tracing & land coordinates',acc_lo:'ກວດສອບຍ້ອນຫຼັງໄດ້ 100%',acc_en:'100% traceable',desc_lo:'ຂຶ້ນທະບຽນສວນປູກ ແລະ ແຕ້ມພິກັດທີ່ດິນ (GPS Polygon) ຊ້ອນທັບປ່າສະຫງວນ · ອອກ Traceability ID (QR) ຕໍ່ລ໊ອດ.',desc_en:'Register plots and draw GPS polygons overlaid on protected forest; issue a per-lot Traceability ID (QR).'},
+ {icon:'scan',tone:'green',lo:'ດາວທຽມ NASA FIRMS · ຍັບຍັ້ງປອດການຈຸດ',en:'NASA FIRMS satellite · anti-burn',acc_lo:'ຝຸ່ນຄວັນ PM2.5',acc_en:'against PM2.5 haze',desc_lo:'ເຊື່ອມ API ດາວທຽມ NASA FIRMS ຈັບຈຸດຄວາມຮ້ອນ (Hotspot) ລາຍວັນ · ອອກໃບຢືນຢັນ Zero-Burn ແລະ ລ໊ອກ Blacklist ຜູ້ລະເມີດອັດຕະໂນມັດ.',desc_en:'Hook the NASA FIRMS API for daily hotspot detection; issue Zero-Burn certificates and auto-blacklist violators.'},
+ {icon:'trend',tone:'gold',lo:'ຄຸ້ມຄອງໂຄຕ້າ ດ້ວຍອັດຕາການຜັນປ່ຽນ',en:'Quota control by conversion ratio',acc_lo:'ປ້ອງກັນສວມຮອຍໂຄຕ້າ',acc_en:'stops quota laundering',desc_lo:'ຄຳນວນໂຄຕ້າສົ່ງອອກດ້ວຍການກະທົບຍອດ "ອັດຕາຜັນປ່ຽນ" ຈາກວັດຖຸດິບ (Input) ໄປເປັນສິນຄ້າສຳເລັດຮູບ (Output) ຮັບປະກັນບໍ່ເກີນກຳລັງຜະລິດຈິງ.',desc_en:'Reconcile export quota by input→output conversion ratio, guaranteeing volumes never exceed real capacity.'},
+ {icon:'store',tone:'purple',lo:'ຕະຫຼາດ B2B ແລະ ຈັບຄູ່ທີ່ດິນ',en:'B2B market & land matching',acc_lo:'ເຊື່ອມຜູ້ຊື້-ຜູ້ຂາຍ-ມັດຈຳ',acc_en:'buyer-seller-escrow',desc_lo:'ຕະຫຼາດຫຼາຍມື ໂອນກຳມະສິດຜ່ານໃບຝາກສາງ · ຈັບຄູ່ສັນຍາຊື້ຂາຍລ່ວງໜ້າ (Contract Farming) ພ້ອມເງິນມັດຈຳຄ້ຳປະກັນ.',desc_en:'Multi-hand market with warehouse-receipt ownership transfer, contract-farming matching, and escrow deposits.'},
+ {icon:'clipboard',tone:'blue',lo:'ໃບອະນຸຍາດດິຈິຕອນ ແລະ NSWA+',en:'Digital permits & NSWA+',acc_lo:'ອະນຸມັດອອນລາຍ ບໍ່ໃຊ້ເຈ້ຍ',acc_en:'paperless approval',desc_lo:'ຍື່ນຂໍ e-Phyto/e-Vet · ເຊັນອະນຸມັດເອເລັກໂຕຣນິກ · ເຊື່ອມ NSWA+ ສົ່ງ TIN/HS Code/ມູນຄ່າໄປດ່ານພາສີອັດຕະໂນມັດ.',desc_en:'File e-Phyto/e-Vet, sign electronically, and push TIN/HS-Code/value to customs via NSWA+ automatically.'},
+ {icon:'handshake',tone:'gold',lo:'ສິນເຊື່ອສີຂຽວ ແລະ ເງິນຊຸກຍູ້',en:'Green credit & incentives',acc_lo:'ປັບຂໍ້ມູນໃຊ້ເປັນທຶນ',acc_en:'turn data into capital',desc_lo:'ເຊື່ອມປະຫວັດການຄ້າ + Farmer Score ເພື່ອຂໍສິນເຊື່ອ · ມອບເງິນຊຸກຍູ້ Zero-Burn ໃຫ້ຊາວສວນທີ່ຮັກສາສິ່ງແວດລ້ອມ.',desc_en:'Link trade history + Farmer Score for credit access, and reward Zero-Burn farmers with green incentives.'},
+];
+const LP_COMMODITIES=[
+ {lo:'ຢາງພາລາ',en:'Rubber',acc:'#7FB98A',tags:['ດິບ · ແປຮູບ']},
+ {lo:'ກາເຟ',en:'Coffee',acc:'#B98A5A',tags:['Arabica']},
+ {lo:'ມັນສຳປະຫຼັງ',en:'Cassava',acc:'#D8C27A',tags:['5:1 ແປ້ງ']},
+ {lo:'ໝາກກ້ວຍ',en:'Bananas',acc:'#E4C84A',tags:['ສົ່ງອອກ']},
+ {lo:'ໝາກໂມ',en:'Watermelons',acc:'#5FBF6A',tags:['ຕາມລະດູ']},
+ {lo:'ໝາກທຸລຽນ',en:'Durian',acc:'#C9A94A',tags:['ພຣີມຽມ','Premium Export']},
+ {lo:'ສັດໃຫຍ່',en:'Cattle',acc:'#B98A6A',tags:['ງົວ','ຄວາຍ']},
+];
+function vLanding(){
+ return `<div class="lp">
+ <header class="lp-nav">
+   <a class="lp-brand" data-go="#/"><span class="lp-logo">${logo(18).replace('class="dot" ','')}</span><span>LAO <b>AGROLINK</b> <span class="c">CENTER</span></span></a>
+   <div class="lp-navr">${langToggle()}${themeToggle()}<button class="lp-signin" data-go="#/login">${t('signin')} <span>→</span></button></div>
+ </header>
+ <section class="lp-hero">
+   <div class="lp-hero-bg" aria-hidden="true"></div>
+   <div class="lp-hero-in">
+     <span class="lp-eyebrow">● LAO AGROLINK · ${lpTxt('platform')}</span>
+     <h1 class="lp-h1">${lpTxt('h1a')}<br><span class="gold">${lpTxt('h1b')}</span></h1>
+     <p class="lp-lead">${lpTxt('lead')}</p>
+     <div class="lp-cta">
+       <button class="lp-btn gold" data-go="#/login">${lpTxt('join')} →</button>
+       <button class="lp-btn ghost" data-go="#/login">${svg('shield',16)} ${t('signin')}</button>
+       <button class="lp-btn greenghost" data-go="#/app/market" data-guest="1">${svg('store',16)} ${lpTxt('market')} →</button>
+     </div>
+   </div>
+   <div class="lp-ribbon">${LP_RIBBON.map((r,i)=>`${i?'<span class="dot">·</span>':''}<div class="ri"><b>${r.v}</b><span>${r[A.lang]}</span></div>`).join('')}</div>
+ </section>
+ <section class="lp-sec">
+   <div class="lp-sec-in">
+     <div class="lp-numblock"><span class="lp-bignum">01</span><div><span class="lp-eyebrow sec">${lpTxt('s1eye')}</span><h2 class="lp-h2">${lpTxt('s1title')}</h2></div></div>
+     <div class="lp-stats">${LP_STATS.map(s=>`<div class="lp-stat"><span class="ic ${s.tone}">${svg(s.icon,22)}</span><div class="v">${s.v}${s.unit?`<small>${s.unit}</small>`:''}</div><div class="lab">${s[A.lang]}</div><div class="sub">${s['sub_'+A.lang]}</div><div class="bar"><i style="width:${s.pct}%"></i></div></div>`).join('')}</div>
+   </div>
+ </section>
+ <section class="lp-sec alt">
+   <div class="lp-sec-in lp-center">
+     <span class="lp-eyebrow sec">${lpTxt('s2eye')}</span>
+     <h2 class="lp-h2 big">${lpTxt('s2a')} <span class="green">${lpTxt('s2b')}</span></h2>
+     <p class="lp-subc">${lpTxt('s2lead')}</p>
+     <div class="lp-feat">${LP_FEATURES.map(f=>`<div class="lp-fcard"><span class="ic ${f.tone}">${svg(f.icon,22)}</span><h3>${f[A.lang]}</h3><p class="acc ${f.tone}">${f['acc_'+A.lang]}</p><p class="desc">${f['desc_'+A.lang]}</p></div>`).join('')}</div>
+   </div>
+ </section>
+ <section class="lp-sec">
+   <div class="lp-sec-in lp-center">
+     <span class="lp-eyebrow sec">${lpTxt('s3eye')}</span>
+     <h2 class="lp-display">7 TARGET COMMODITIES</h2>
+     <p class="lp-subc">${lpTxt('s3lead')}</p>
+     <div class="lp-comm">${LP_COMMODITIES.map((c,i)=>`<div class="lp-ccard" style="--acc:${c.acc}"><div class="glow"></div><span class="idx">0${i+1}</span><h3>${c.lo}</h3><span class="en">${c.en}</span><div class="tags">${c.tags.map(x=>`<span>${x}</span>`).join('')}</div></div>`).join('')}</div>
+   </div>
+ </section>
+ <section class="lp-final">
+   <div class="lp-sec-in lp-center">
+     <h2 class="lp-h2 big">${lpTxt('finalTitle')}</h2>
+     <p class="lp-subc">${lpTxt('finalLead')}</p>
+     <div class="lp-cta" style="justify-content:center"><button class="lp-btn gold" data-go="#/login">${lpTxt('join')} →</button><button class="lp-btn greenghost" data-go="#/roles">${t('register')}</button></div>
+   </div>
+   <div class="lp-foot"><span>© 2026 LAO AGRO LINK CENTER · Prototype</span><span>Terms · Privacy</span></div>
+ </section>
+ </div>`;
+}
+function vLogin(){
+ return `<div class="authwrap"><div class="card logincard"><div class="lgtop">${langToggle()}${themeToggle()}</div>
+   <div style="display:grid;place-items:center;margin:8px 0 4px"><span class="brand" style="font-size:17px">${logo(16)} ${t('brand')}</span></div>
+   <h2>${t('login_t')}</h2><div class="sub">${t('login_s')}</div>
+   <label class="f"><span>${t('email')}</span><input type="text" placeholder="somsak@farm.la" autocomplete="off"></label>
+   <label class="f"><span>${t('pass')}</span><input type="password" placeholder="••••••••" autocomplete="off"></label>
+   <div class="demoflag">${t('login_demo')}</div>
+   <button class="btn" style="width:100%" data-go="#/roles">${t('login_btn')}</button>
+   <div class="or-div"><span>${t('or_div')}</span></div>
+   <div class="tester">
+     <div class="tester-lab">${svg('shield',14)} ${t('tester_lab')}</div>
+     <p class="tester-hint">${t('tester_hint')}</p>
+     <div class="tester-row">
+       <select id="tester-role" aria-label="tester role">${ROLES.map(r=>`<option value="${r.id}">${r[A.lang]} · ${A.lang==='lo'?r.en:r.lo}</option>`).join('')}</select>
+       <button class="btn gold" id="tester-go">${t('tester_btn')} →</button>
+     </div>
+   </div>
+   <div class="linkrow">${t('no_acc')} <a data-go="#/roles">${t('register')}</a></div>
+   <div class="linkrow"><a data-go="#/app/market" data-guest="1">${t('or_guest')}</a></div>
+   <div class="linkrow"><a data-go="#/">${t('back_home')}</a></div></div></div>`;
+}
+function vRoles(){
+ return `<div class="rolewrap"><div style="display:flex;justify-content:flex-end;gap:9px;max-width:900px;margin:0 auto 6px">${langToggle()}${themeToggle()}</div>
+   <div class="rolehead"><div class="logo">${logo(26).replace('class="dot" ','')}</div><h2>${t('role_t')}</h2><p>${t('role_p')}</p></div>
+   <div class="rolegrid">${ROLES.map(r=>`<button class="rolecard" data-role="${r.id}"><div class="ic">${svg(r.icon,26)}</div><div class="lo">${r[A.lang]}</div><div class="en">${A.lang==='lo'?r.en:r.lo}</div></button>`).join('')}</div>
+   <a class="backlink" data-go="#/">${t('back_home')}</a></div>`;
+}
+/* ----- app shell ----- */
+function roleLabel(){const r=ROLES.find(x=>x.id===A.role);return r?r[A.lang]:'';}
+function vApp(nav){
+ const p=perm();
+ const inboxN=A.role!=='guest'?inboxIncoming().length:0;
+ const navItems=NAV.filter(n=>p.nav.includes(n.id)||(n.id==='inbox'&&A.role!=='guest')).map(n=>`<a data-nav="${n.id}" class="${nav===n.id?'on':''}"><span class="ic">${svg(n.icon,19)}</span><span>${t(n.k)}</span>${n.id==='inbox'&&inboxN?`<span class="ibadge">${inboxN}</span>`:`<span class="en">${A.lang==='lo'?I[n.k].en:''}</span>`}</a>`).join('');
+ const pageTitle=t((NAV.find(n=>n.id===nav)||{k:'nav_dash'}).k);
+ const badgeClass=A.role==='guest'?'guest':(p.gov?'gov':'');
+ const badgeText=A.role==='guest'?t('guest_note'):(p.gov?t('nav_oversight')+' · '+roleLabel():roleLabel());
+ return `<div class="scrim" id="scrim"></div><div class="shell">
+   <aside class="side" id="side"><div class="top"><span class="brand">${logo(16)} ${t('brand')}</span></div>
+     <nav>${navItems}</nav>
+     <div class="bot"><a data-go="#/roles">${svg('swap',18)} ${t('switch_role')}</a><a data-go="#/">${svg('out',18)} ${t('signout')}</a></div></aside>
+   <div class="main"><div class="apptop"><button class="burger" id="burger">${svg('grid',18)}</button><h1>${pageTitle}</h1>
+     <div class="sp">${langToggle()}${themeToggle()}<span class="rolebadge ${badgeClass}">${badgeText}</span><span class="avatar">${svg('shield',16)}</span></div></div>
+     <div class="content">${appPage(nav)}</div></div></div>${A.modal?modalHTML():''}${A.report?reportOverlayHTML():''}`;
+}
+function appPage(nav){switch(nav){case 'oversight':return pOversight();case 'inbox':return pInbox();case 'farm':return pFarm();case 'production':return pProd();case 'market':return pMarket();case 'warehouse':return pWarehouse();case 'trade':return pTrade();case 'trace':return pTrace();default:return pDash();}}
+/* ---- dashboards (role-specific) ---- */
+function pDash(){
+ const d=perm().dash;
+ if(A.role==='livestock') return dashOp(isLo()?'ຟາມສັດ':'Livestock farm',isLo()?'ລົງທະບຽນ ແລະ ຂາຍສັດ':'Register & sell animals',[[isLo()?'ລົງທະບຽນຟາມສັດ':'Register livestock',null,'cow',null,'animalReg'],[isLo()?'ຕະຫຼາດ':'Market','market','bag'],[isLo()?'ກ່ອງຄຳຂໍ':'Inbox','inbox','inbox'],[isLo()?'ຕິດຕາມ':'Trace','trace','qr']]);
+ if(A.role==='warehouse') return dashOp(isLo()?'ຄຸ້ມຄອງສາງ':'Warehouse',isLo()?'ຮັບເຂົ້າ · ໃບຝາກ · ຄ້າຂາຍ':'Intake · receipt · trade',[[isLo()?'ກ່ອງຄຳຂໍຝາກ':'Deposit inbox','inbox','inbox'],[isLo()?'ຮັບເຂົ້າ (ບັນທຶກເອງ)':'Manual intake',null,'warehouse',null,'intake'],[isLo()?'ຕະຫຼາດ':'Market','market','bag'],[isLo()?'ສາງ':'Warehouse','warehouse','warehouse']]);
+ if(A.role==='logistics') return dashOp(isLo()?'ຂົນສົ່ງ':'Logistics',isLo()?'ຮັບວຽກຂົນສົ່ງ → ຮັບ → ສົ່ງ':'Jobs · pickup · deliver',[[isLo()?'ສ້າງວຽກຂົນສົ່ງ':'New transport job',null,'truck',null,'logiJob'],[isLo()?'ສາງ':'Warehouse','warehouse','warehouse'],[isLo()?'ກ່ອງຄຳຂໍ':'Inbox','inbox','inbox'],[isLo()?'ການຄ້າ':'Trade','trade','chart']]);
+ if(d==='gov') return pOversight();
+ if(d==='factory') return dashOp(isLo()?'ໂຮງງານແປຮູບ · ຫຼວງ':'Luang Processing Mill',isLo()?'ຮັບອໍເດີ້ · ຊື້ · ແປຮູບ':'Orders · buy · process',[[isLo()?'ກ່ອງໃບສັ່ງຊື້':'Purchase inbox','inbox','inbox'],[isLo()?'ສ້າງໃບສັ່ງຊື້':'Purchase order',null,'bag',null,'factoryOrder'],[isLo()?'ແປຮູບ 5:1':'Process 5:1',null,'plus',null,'convert'],[isLo()?'ຕິດຕາມ':'Trace','trace','qr']]);
+ if(d==='exporter') return dashOp(isLo()?'ບໍລິສັດສົ່ງອອກ ເມກອງ':'Mekong Export Co.',isLo()?'ຂໍໂຄຕ້າ · ຊື້ · ສົ່ງອອກ':'Quota · buy · export',[[isLo()?'ຂໍໂຄຕ້າສົ່ງອອກ':'Request quota',null,'ship','requestQuota'],[isLo()?'ຊື້ເພື່ອສົ່ງອອກ':'Buy to export','market','bag'],[isLo()?'ກ່ອງຄຳຂໍ':'Inbox','inbox','inbox'],[isLo()?'ການຄ້າ':'Trade','trade','chart']]);
+ if(d==='field') return dashOp(isLo()?'ເຈົ້າໜ້າທີ່ພາກສະໜາມ':'Field Officer',isLo()?'ຮັບວຽກກວດ · ອອກໃບຮັບຮອງ':'Inspect & certify',[[isLo()?'ກ່ອງວຽກກວດ':'Inspection inbox','inbox','clipboard'],[isLo()?'ບັນທຶກຜົນກວດ':'Record inspection',null,'clipboard',null,'inspectRecord'],[isLo()?'ຕິດຕາມ':'Trace','trace','qr'],[isLo()?'ຕະຫຼາດ':'Market','market','bag']]);
+ if(d==='op') return dashOp(roleLabel(),isLo()?'ຊື້-ຂາຍ ແລະ ຄຸ້ມຄອງສາງ':'Trade & warehouse',[[isLo()?'ກ່ອງຄຳຂໍຝາກ':'Deposit inbox','inbox','inbox'],[isLo()?'ຊື້-ຂາຍ':'Trade','market','bag'],[isLo()?'ສາງ':'Warehouse','warehouse','warehouse'],[isLo()?'ການຄ້າ':'Trade stats','trade','chart']]);
+ // farmer default
+ return `<div class="greet"><h2>${t('greet')}, Somsak 👋</h2><p>${t('farm_line')}</p></div>
+ <div class="statgrid">
+   <div class="scard"><div class="lab">${t('active_crop')}</div><div class="big">${t('jasmine')}</div><div class="sub">Season 2 · 45 ${isLo()?'ວັນເຫຼືອ':'days left'}</div></div>
+   <div class="scard"><div class="lab">${t('land_area')}</div><div class="big">12.5 ha</div><div class="sub">SLId: SL-VTE-2024-0847</div></div>
+   <div class="scard"><div class="lab">${t('exp_yield')}</div><div class="big">62.5 T</div><div class="sub">5 T/ha</div></div>
+   <div class="scard"><div class="lab">${t('floor')}</div><div class="big gold">${money(A.floor)}<span style="font-size:13px">/kg</span></div><div class="sub">${isLo()?'ອັບເດດມື້ນີ້':'Updated today'}</div></div></div>
+ <div class="block"><div class="bh"><h3>${t('crop_prog')}</h3><span class="r">${t('growing')}</span></div><div class="progress"><i style="width:62.5%"></i></div></div>
+ ${myPlotsBlock()}`;
+}
+function dashOp(title,sub,qa){
+ const phys=physicalStock();
+ return `<div class="greet"><h2>${title}</h2><p>${sub}</p></div>
+ <div class="statgrid">
+   <div class="scard"><div class="lab">${t('tvol')}</div><div class="big blue">${money(A.tradeVolume)}</div><div class="sub">${t('tvol_s')}</div></div>
+   <div class="scard"><div class="lab">${t('pstock')}</div><div class="big gold">${phys.toFixed(1)} T</div><div class="sub">${t('pstock_s')}</div></div>
+   <div class="scard"><div class="lab">${t('quota_lab')}</div><div class="big">${A.quota.granted-A.quota.consumed} T</div><div class="sub">${t('quota_s')} ${A.quota.granted}</div></div>
+   <div class="scard"><div class="lab">${t('floor')}</div><div class="big gold">${money(A.floor)}<span style="font-size:13px">/kg</span></div><div class="sub">${isLo()?'ປັດຈຸບັນ':'current'}</div></div></div>
+ <div class="block"><div class="bh"><h3>${t('quick')}</h3></div><div class="qa">
+   ${qa.map(a=>`<button ${a[4]?`data-modal-open="${a[4]}"`:a[3]?`data-action="${a[3]}"`:`data-nav="${a[1]}"`}><span class="ic">${svg(a[2],22)}</span>${a[0]}</button>`).join('')}</div></div>`;
+}
+function pOversight(){
+ const phys=physicalStock();const lots=Object.values(A.lots);
+ return `<div style="margin-bottom:6px"><h2 style="font-size:22px">${t('gov_head')}</h2><p class="pgsub">${t('gov_sub')}</p></div>
+ <div class="guestbar gov">${svg('shield',18)} <b>${t('gov_note')}</b></div>
+ <div class="statgrid">
+   <div class="scard"><div class="lab">${t('tvol')}</div><div class="big blue">${money(A.tradeVolume)}</div><div class="sub">${t('tvol_s')}</div></div>
+   <div class="scard"><div class="lab">${t('pstock')}</div><div class="big gold">${phys.toFixed(1)} T</div><div class="sub">${t('pstock_s')}</div></div>
+   <div class="scard"><div class="lab">${t('n_trades')}</div><div class="big">${A.ledger.length}</div><div class="sub">ledger entries</div></div>
+   <div class="scard"><div class="lab">${t('quota_used')}</div><div class="big">${A.quota.consumed} / ${A.quota.granted} T</div><div class="sub">${t('quota_s')} ${A.quota.granted-A.quota.consumed}</div></div></div>
+ ${govActions()}
+ <div class="block"><div class="bh"><h3>${t('all_lots')}</h3><span class="chip g" style="margin-left:auto">${lots.length} ${t('lots_in')}</span></div>
+   <div class="tablewrap"><table><thead><tr><th>Lot</th><th>${t('goods')}</th><th>${t('col_qty')}</th><th>${t('cur_owner')}</th><th>${t('tier')}</th><th>${t('status')}</th><th>${t('compliance')}</th></tr></thead>
+   <tbody>${lots.map(l=>`<tr><td class="mono">${l.id}</td><td>${l.crop[A.lang]}</td><td class="mono">${l.qty} T</td><td>${pn(l.holder)}</td><td>${l.tier}</td><td>${stateTh(l.state)}</td><td>${l.zb?'<span class="chip g">✓ zero-burn</span>':'<span class="chip r">⚠</span>'}</td></tr>`).join('')}</tbody></table></div></div>`;
+}
+/* ---- farm / production / warehouse / trade / trace ---- */
+function pFarm(){
+ const hist=[['Season 1 2024 — '+t('jasmine'),'58.2 T'],['Season 2 2023 — '+(isLo()?'ເຂົ້າໜຽວ':'Sticky Rice'),'45.0 T'],['Season 1 2023 — '+t('jasmine'),'55.8 T']];
+ return `<div class="block"><div style="display:flex;gap:14px;align-items:flex-start"><div style="flex:1">
+     <h3 class="mono" style="font-size:17px">SLId: SL-VTE-2024-0847</h3><div class="chip g" style="margin-top:8px">✓ ${t('verified')}</div>
+     <div class="kv" style="grid-template-columns:auto 1fr auto 1fr;margin-top:16px">
+       <dt>${t('farm_name')}</dt><dd style="text-align:left">${isLo()?'ໄຮ່ນາ ບ້ານໂພນຮ່ອງ':'Ban Phonhong Farm'}</dd><dt>${t('owner')}</dt><dd style="text-align:left">Somsak P.</dd>
+       <dt>${t('district')}</dt><dd style="text-align:left">${isLo()?'ໂພນຮ່ອງ, ວຽງຈັນ':'Phonhong, Vientiane'}</dd><dt>${t('land_area')}</dt><dd style="text-align:left">12.5 ha</dd>
+       <dt>${t('cur_crop')}</dt><dd style="text-align:left">${t('jasmine')}</dd><dt>${t('land_status')}</dt><dd style="text-align:left;color:var(--green)">${t('active')}</dd></div>
+   </div><div class="qr" aria-hidden="true"></div></div></div>
+ <div class="block"><div class="bh"><h3>${t('prod_hist')}</h3></div><div class="tablewrap"><table><tbody>${hist.map(h=>`<tr><td>${h[0]}</td><td style="text-align:right;font-family:'IBM Plex Mono';font-weight:600">${h[1]}</td></tr>`).join('')}</tbody></table></div></div>`;
+}
+function pProd(){
+ const lc=['lc1','lc2','lc3','lc4','lc5','lc6','lc7'];const cur=3;
+ return `<div class="block"><div class="bh"><h3>${t('lifecycle')}</h3></div><div class="lifecycle">${lc.map((s,i)=>`<div class="st ${i<cur?'done':i===cur?'cur':''}"><span class="n">${i+1}</span>${t(s)}</div>${i<6?'<span class="arw">›</span>':''}`).join('')}</div></div>
+ <div class="statgrid"><div class="scard"><div class="lab">${t('planned')}</div><div class="big">62.5 T</div><div class="sub">5 T/ha × 12.5 ha</div></div>
+   <div class="scard"><div class="lab">${t('projected')}</div><div class="big">60.0 T</div><div class="sub">${isLo()?'ຈາກ AI':'AI'}</div></div>
+   <div class="scard"><div class="lab">${t('actual')}</div><div class="big" style="color:var(--muted)">—</div><div class="sub">${t('harvest_pending')}</div></div></div>`;
+}
+function physicalStock(){return Object.values(A.lots).filter(l=>['IN_WAREHOUSE','TRADED'].includes(l.state)).reduce((a,l)=>a+l.qty,0);}
+/* ---- marketplace (multi-hand) ---- */
+function pMarket(){
+ const p=perm();const readonly=p.gov||A.role==='guest'||!p.trade;
+ return `<div style="margin-bottom:6px"><h2 style="font-size:22px">${t('mkt_head')}</h2><p class="pgsub">${t('mkt_sub')}</p></div>
+ ${A.role==='guest'?`<div class="guestbar">${svg('alert',18)} <b>${t('guest_note')}</b> <button class="btn sm" data-go="#/roles" style="margin-left:auto">${t('register')}</button></div>`:''}
+ ${p.gov?`<div class="guestbar gov">${svg('shield',18)} <b>${t('gov_note')}</b></div>`:''}
+ <div class="mribbon">
+   <div class="scard"><div class="lab">${t('tvol')}</div><div class="big blue">${money(A.tradeVolume)}</div><div class="sub">${t('tvol_s')}</div></div>
+   <div class="scard"><div class="lab">${t('pstock')}</div><div class="big gold">${physicalStock().toFixed(1)} T</div><div class="sub">${t('pstock_s')}</div></div>
+   <div class="scard"><div class="lab">${t('quota_lab')}</div><div class="big">${A.quota.granted-A.quota.consumed} T</div><div class="sub">${t('quota_s')} ${A.quota.granted}</div></div>
+   <div class="scard"><div class="lab">${t('escrow_held')}</div><div class="big">${money(A.escrowHeld)}</div><div class="sub">${A.contracts.filter(c=>c.status==='awaiting').length} ${isLo()?'ສັນຍາ':'contracts'}</div></div></div>
+ <div class="note" style="margin-bottom:14px">${t('assume')}</div>
+ <div class="market">
+   <section class="panel"><div class="ph"><h3>${t('mkt_col')}</h3><span class="c">${Object.keys(A.lots).length} ${t('lots_in')}</span></div><div class="pb">${Object.values(A.lots).map(lotCard).join('')}</div></section>
+   <section class="panel"><div class="ph"><h3>${t('detail_col')}</h3></div><div class="pb">${lotDetail(readonly)}</div></section>
+   <section class="panel col-side"><div class="subtabs">
+     <button data-tab="ledger" aria-pressed="${A.sideView==='ledger'}">${t('tab_ledger')}</button>
+     <button data-tab="ctr" aria-pressed="${A.sideView==='ctr'}">${t('tab_ctr')}</button>
+     <button data-tab="log" aria-pressed="${A.sideView==='log'}">${t('tab_log')}</button></div>
+     <div class="pb">${sidePanel()}</div></section></div>`;
+}
+function stateTh(s){const m={GROWING:{lo:'ກຳລັງປູກ',en:'Growing'},CERTIFIED:{lo:'ຜ່ານການກວດ',en:'Certified'},HARVESTED:{lo:'ເກັບກ່ຽວແລ້ວ',en:'Harvested'},IN_WAREHOUSE:{lo:'ໃນສາງ',en:'In warehouse'},TRADED:{lo:'ປ່ຽນມືແລ້ວ',en:'Traded'},PROCESSED:{lo:'ແປຮູບແລ້ວ',en:'Processed'},WITHDRAWN:{lo:'ຖອນອອກ',en:'Withdrawn'},EXPORTED:{lo:'ສົ່ງອອກແລ້ວ',en:'Exported'}};return m[s]?m[s][A.lang]:s;}
+function modelTh(m){return m==='contract'?'Contract 50-50':m==='future'?'Future':'Spot';}
+function lotCard(l){
+ const off=A.offers.find(o=>o.lot===l.id&&o.status==='open');const tc=l.tier>=3?'g':l.tier===2?'b':'gold';
+ return `<div class="lotcard ${A.selected===l.id?'sel':''}" data-lot="${l.id}"><div class="r1"><span class="id">${l.id}</span><span style="font-size:13px">${l.crop[A.lang]}</span><span class="qty">${l.qty} T</span></div>
+   <div class="r2"><span class="chip p">◈ ${pn(l.holder)}</span><span class="chip ${tc}">${isLo()?'ຕະຫຼາດ':'Tier'} ${l.tier}</span><span class="chip g">${stateTh(l.state)}</span>${l.reserved?`<span class="chip gold">${isLo()?'ຈອງ (ສັນຍາ)':'reserved'}</span>`:''}${l.zb?`<span class="chip g">✓ ${isLo()?'ປອດເຜົາ':'zero-burn'}</span>`:''}</div>
+   ${off?`<div class="offer">${isLo()?'ຕັ້ງຂາຍ':'Offer'} <span class="pr">${money(off.price)}/kg</span> · ${modelTh(off.model)}</div>`:''}</div>`;
+}
+function lotDetail(readonly){
+ if(!A.selected||!A.lots[A.selected]) return `<div class="dz">${t('pick_lot')}</div>`;
+ const l=A.lots[A.selected];const days=Math.max(0,A.day-l.since);
+ const evs=A.ledger.filter(e=>e.lot===l.id&&e.type==='transfer').slice().reverse();
+ const nodes=[{who:l.origin.length>1?(isLo()?'ລວມຫຼາຍສວນ':'Multiple farms'):pn(l.holder),mt:(isLo()?'ຕົ້ນທາງ · ':'Origin · ')+l.origin.join(', ')}];
+ evs.forEach(e=>nodes.push({who:pn(e.to),mt:(isLo()?'ໂອນ @ ':'@ ')+money(e.price)+'/kg · d'+e.at}));
+ const canAct=l.state!=='WITHDRAWN'&&l.state!=='EXPORTED';const owners=Object.keys(PARTY).filter(id=>id!==l.holder);
+ return `<div><h2 class="mono" style="font-size:16px">${l.id}</h2>
+   <dl class="kv"><dt>${t('goods')}</dt><dd>${l.crop[A.lang]}</dd><dt>${t('qty_real')}</dt><dd style="color:var(--gold)">${l.qty} T</dd>
+     <dt>${t('cur_owner')}</dt><dd style="color:var(--purple)">${pn(l.holder)}</dd><dt>${t('at_wh')}</dt><dd>${l.wh&&A.warehouses[l.wh]?A.warehouses[l.wh].name[A.lang]+' · '+days+(isLo()?' ວັນ':'d'):(isLo()?'ຍັງບໍ່ເຂົ້າສາງ':'not in warehouse yet')}</dd>
+     <dt>${t('tier')}</dt><dd>${isLo()?'ຕະຫຼາດ':'Tier'} ${l.tier}</dd><dt>${t('status')}</dt><dd>${stateTh(l.state)}</dd></dl>
+   <div class="slab">${t('provenance')}</div><div class="prov">${l.origin.map(o=>`<span class="p">${o}</span>`).join('')}</div>
+   ${l.note?`<div class="note">${l.note[A.lang]}</div>`:''}
+   <div class="slab">${t('chain_of')} (${nodes.length} ${t('hands')})</div>
+   <div class="chain">${nodes.map((n,i)=>`<div class="node ${i===nodes.length-1?'cur':''}"><span class="dc"></span><div><div class="who">${n.who}</div><div class="mt">${n.mt}</div></div></div>`).join('')}</div>
+   ${readonly?`<div class="note">${A.role==='guest'?t('guest_note'):(perm().gov?t('gov_note'):t('no_perm_trade'))}</div>`:(canAct?actionsBlock(l,owners):`<div class="note">${t('closed')}</div>`)}</div>`;
+}
+function actionsBlock(l,owners){
+ const p=perm();const isCassava=l.crop.en.toLowerCase().includes('cassava');
+ return `<div class="slab">${t('transfer_lab')}</div>
+  <div class="fld"><label>${t('receiver')}</label><select id="buyer">${owners.map(id=>`<option value="${id}">${pn(id)} · ${PARTY[id].kind}</option>`).join('')}</select></div>
+  <div class="fld"><label>${t('price_kg')}</label><input id="tprice" type="number" value="4500" step="50" min="0"></div>
+  <div class="acts"><button class="btn" id="act-spot">${t('btn_spot')}</button><button class="btn blue" id="act-contract">${t('btn_contract')}</button></div>
+  <div class="acts" style="margin-top:9px"><button class="btn gold" id="act-future">${t('btn_future')}</button><button class="btn ghost" id="act-post">${t('btn_post')}</button></div>
+  <div class="note">${t('pm_note')}</div>
+  <div class="acts" style="margin-top:9px">
+    ${p.convert?`<button class="btn ghost" id="act-convert" ${isCassava?'':'disabled'}>${t('btn_convert')}</button>`:''}
+    <button class="btn ghost" id="act-withdraw">${t('btn_withdraw')}</button></div>
+  <div class="acts one" style="margin-top:9px"><button class="btn ghost" id="act-purchase">${isLo()?'ສົ່ງໃບສັ່ງຊື້ (ຂໍອະນຸມັດ)':'Send purchase order (needs approval)'}</button></div>
+  ${p.export?`<div class="acts one" style="margin-top:9px"><button class="btn gold" id="act-export">${t('btn_export')}</button></div>`:''}`;
+}
+function sidePanel(){
+ if(A.sideView==='ledger'){
+   if(!A.ledger.length) return `<div class="dz">${t('no_ledger')}</div>`;
+   return `<div class="led">${A.ledger.map(e=>`<div class="row"><span class="seq">#${e.seq}</span><span>${ledgerLine(e)}</span><span class="val">${e.price?money(e.price)+'/kg':(e.amount?money(e.amount):(e.fee?money(e.fee):'—'))}</span></div>`).join('')}</div>`;
+ }
+ if(A.sideView==='ctr'){
+   let h=`<div class="mktprice"><span class="lab">${t('mkt_price')}</span><span class="v">${money(A.marketPrice)}</span><span style="margin-left:auto;display:flex;gap:6px"><button class="tk" data-tick="-100">−</button><button class="tk" data-tick="100">+</button></span></div>`;
+   if(!A.contracts.length && !A.futures.length) return h+`<div class="dz">${t('no_ctr')}</div>`;
+   h+=A.contracts.map((c,i)=>`<div class="ctr"><div class="r1"><span class="id">${c.lot}</span><span class="chip ${c.status==='settled'?'g':'gold'} st">${c.status==='settled'?t('c_settled'):t('c_await')}</span></div>
+       <div class="meta">${pn(c.seller)} → ${pn(c.buyer)} · ${money(c.price)}/kg · ${t('c_deposit')} ${money(c.deposit)}</div>
+       ${c.status==='awaiting'?`<button class="btn sm" data-settle="${i}">${t('btn_settle')}</button>`:''}</div>`).join('');
+   h+=A.futures.map(f=>`<div class="ctr"><div class="r1"><span class="id">${f.lot}</span><span class="chip ${f.status==='fired'?'g':f.status==='void'?'r':'b'} st">${f.status==='fired'?'✓ fired':f.status==='void'?'void':t('f_pending')}</span></div>
+       <div class="meta">Future · ${pn(f.buyer)} · ${t('f_trigger')} ${money(f.trigger)}</div></div>`).join('');
+   return h;
+ }
+ return A.log.map(x=>`<div class="logrow"><span class="ic ${x.k}">${x.k==='ok'?'✓':x.k==='no'?'✕':x.k==='mv'?'⇄':'i'}</span><span>${x.t}</span><span class="tt">d${x.at}</span></div>`).join('');
+}
+function ledgerLine(e){const b='<b>'+e.lot+'</b> ';
+ if(e.type==='transfer') return b+pn(e.from)+' → '+pn(e.to)+' · '+e.qty+'T';
+ if(e.type==='withdraw') return b+(isLo()?'ຖອນອອກ':'withdraw')+' · '+e.qty+'T';
+ if(e.type==='convert') return b+(isLo()?'ແປຮູບຈາກ ':'from ')+e.from+' · '+e.qty+'T';
+ if(e.type==='export') return b+(isLo()?'ສົ່ງອອກ → ':'export → ')+e.to+' · '+e.qty+'T';
+ if(e.type==='payout') return (isLo()?'💰 ຊຳລະເງິນ ':'💰 Payout ')+pn(e.from)+' → '+pn(e.to);
+ if(e.type==='certify') return b+(isLo()?'ອອກໃບຮັບຮອງ ✓':'certified ✓');
+ if(e.type==='intake') return b+(isLo()?'ຮັບເຂົ້າສາງ':'intake')+' · '+e.qty+'T';
+ if(e.type==='register') return b+(isLo()?'ລົງທະບຽນ':'registered');
+ if(e.type==='harvest') return b+(isLo()?'ເກັບກ່ຽວ':'harvested')+' · '+e.qty+'T';
+ if(e.type==='logistics') return b+(isLo()?'ຂົນສົ່ງ':'transport')+' · '+e.qty+'T';
+ return b;
+}
+function pWarehouse(){
+ const rows=[['Ban Phonhong','SL-VTE-2024-0847',t('jasmine'),'12 T','14:30'],['Nong Khai Farm','SL-VTE-2024-1102',t('jasmine'),'8 T','15:00'],['Tha Ngon Organic','SL-VTE-2024-0561',t('jasmine'),'6.5 T','16:15']];
+ return `<div class="block"><div class="bh"><h3>${t('wh_head')}</h3><span class="chip g" style="margin-left:auto">✓ ${t('wh_trusted')}</span></div></div>
+ <div class="statgrid"><div class="scard"><div class="lab">${t('purch_today')}</div><div class="big">45.2 T</div><div class="sub">8 ${isLo()?'ຄັ້ງ':'deliveries'}</div></div>
+   <div class="scard"><div class="lab">${t('avail_cap')}</div><div class="big">680 T</div><div class="sub">/ 1,200 T</div></div>
+   <div class="scard"><div class="lab">${t('pend_del')}</div><div class="big" style="color:var(--gold)">3</div><div class="sub">${isLo()?'ຄາດມື້ນີ້':'today'}</div></div>
+   <div class="scard"><div class="lab">${t('avg_paid')}</div><div class="big">₭4,480<span style="font-size:13px">/kg</span></div><div class="sub">${isLo()?'ສູງກວ່າ floor':'above floor'}</div></div></div>
+ <div class="block"><div class="bh"><h3>${t('incoming')}</h3></div><div class="tablewrap"><table>
+   <thead><tr><th>${t('col_farm')}</th><th>${t('col_crop')}</th><th>${t('col_qty')}</th><th>${t('col_eta')}</th><th></th></tr></thead>
+   <tbody>${rows.map(r=>`<tr><td><b>${r[0]}</b><br><span class="mono" style="font-size:11px;color:var(--muted)">${r[1]}</span></td><td>${r[2]}</td><td class="mono">${r[3]}</td><td class="mono">${r[4]}</td><td style="text-align:right"><button class="btn sm" data-toast="${isLo()?'ຮັບເຂົ້າສາງແລ້ວ':'Received into warehouse'}">${t('receive')}</button></td></tr>`).join('')}</tbody></table></div></div>`;
+}
+function walletBlock(){
+ const rows=Object.keys(A.wallets).map(id=>[id,A.wallets[id]]).sort((a,b)=>b[1]-a[1]);
+ const payouts=A.ledger.filter(e=>e.type==='payout');
+ return `<div class="block"><div class="bh"><h3>${isLo()?'ການເງິນ · ກະເປົາເງິນ':'Finance · Wallets'}</h3>
+   <button class="btn sm" data-action="report" style="margin-left:auto">${svg('chart',15)} ${isLo()?'ອອກລາຍງານ':'Report'}</button></div>
+   <div class="statgrid" style="margin:10px 0 12px">
+     <div class="scard"><div class="lab">${isLo()?'ມັດຈຳຄ້າງ (escrow)':'Escrow held'}</div><div class="big blue">${money(A.escrowHeld)}</div><div class="sub">${A.contracts.filter(c=>c.status==='awaiting').length} ${isLo()?'ສັນຍາ':'contracts'}</div></div>
+     <div class="scard"><div class="lab">${isLo()?'ຄ່າຝາກສາງ':'Storage fees'}</div><div class="big gold">${money(A.storageFees)}</div><div class="sub">₭50/T/${isLo()?'ວັນ':'day'}</div></div>
+     <div class="scard"><div class="lab">${isLo()?'ຊຳລະເງິນ (payout)':'Payouts'}</div><div class="big">${payouts.length}</div><div class="sub">${payouts.length?money(payouts.reduce((a,e)=>a+(e.amount||0),0)):'—'}</div></div>
+   </div>
+   <div class="tablewrap"><table><thead><tr><th>${isLo()?'ຝ່າຍ':'Party'}</th><th style="text-align:right">${isLo()?'ຍອດເງິນ':'Balance'}</th></tr></thead><tbody>
+     ${rows.map(([id,bal])=>`<tr><td>${pn(id)} <span class="mono" style="font-size:10px;color:var(--muted)">${id}</span></td><td style="text-align:right;color:${bal<0?'var(--crit)':'var(--green)'}" class="mono">${money(bal)}</td></tr>`).join('')}
+   </tbody></table></div></div>`;
+}
+function pTrade(){
+ const provs=[['Vientiane',620,100],['Savannakhet',410,66],['Champasak',280,45]];
+ return `${walletBlock()}<div class="statgrid"><div class="scard"><div class="lab">${t('total_trades')}</div><div class="big">247</div><div class="sub">${isLo()?'ມື້ນີ້':'today'}</div></div>
+   <div class="scard"><div class="lab">${t('total_value')}</div><div class="big gold">₭1.04B</div><div class="sub">&nbsp;</div></div>
+   <div class="scard"><div class="lab">${t('active_wh')}</div><div class="big">18</div><div class="sub">5 ${isLo()?'ແຂວງ':'provinces'}</div></div>
+   <div class="scard"><div class="lab">${t('floor')}</div><div class="big gold">${money(A.floor)}<span style="font-size:13px">/kg</span></div><div class="sub">${isLo()?'ປັດຈຸບັນ':'current'}</div></div></div>
+ <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px" class="tradegrid">
+   <div class="block"><div class="bh"><h3>${t('price_sum')}</h3></div><table><tbody>
+     <tr><td>${t('avg')}</td><td style="text-align:right" class="mono">₭4,420/kg</td></tr><tr><td>${t('high')}</td><td style="text-align:right;color:var(--green)" class="mono">₭4,800/kg</td></tr>
+     <tr><td>${t('low')}</td><td style="text-align:right;color:var(--gold)" class="mono">₭4,200/kg</td></tr><tr><td>${t('volume')}</td><td style="text-align:right" class="mono">1,890 T</td></tr></tbody></table></div>
+   <div class="block"><div class="bh"><h3>${t('top_prov')}</h3></div><div class="barlist">${provs.map(p=>`<div class="b"><div class="t"><span>${p[0]}</span><span class="v">${p[1]} T</span></div><div class="track"><i style="width:${p[2]}%"></i></div></div>`).join('')}</div></div></div>`;
+}
+function pTrace(){
+ const evs=[{t:{lo:'ໄຮ່ນາ',en:'Farm'},m:'Ban Phonhong · SL-VTE-2024-0847',d:'15 Aug 2026',done:true},{t:{lo:'ສາງ',en:'Warehouse'},m:A.warehouses.W1.name[A.lang],d:'16 Aug 2026',done:true},{t:{lo:'ແປຮູບ',en:'Processing'},m:(isLo()?'ໂຮງສີ ຫຼວງ':'Luang Mill'),d:'17 Aug 2026',done:true},{t:{lo:'ກຽມສົ່ງອອກ',en:'Export Prep'},m:(isLo()?'ກວດຄຸນນະພາບຜ່ານ':'Quality inspection passed'),d:'18 Aug 2026',done:false},{t:{lo:'ສົ່ງອອກ',en:'Exported'},m:(isLo()?'ລໍຖ້າ':'Pending'),d:'—',done:false}];
+ return `<div class="block"><div class="bh"><h3>${t('trace_head')}</h3></div><div class="kv" style="grid-template-columns:auto 1fr auto 1fr auto 1fr;margin-top:8px">
+     <dt>${t('lot_no')}</dt><dd class="mono" style="text-align:left">LOT-2026-VTE-4821</dd><dt>${t('goods')}</dt><dd style="text-align:left">${t('jasmine')}</dd><dt>${t('qty_real')}</dt><dd style="text-align:left">12 T</dd></div></div>
+ <div class="block"><div class="tl">${evs.map(e=>`<div class="ev ${e.done?'':'pending'}"><span class="d"></span><div><h4>${e.t[A.lang]}</h4><div class="m">${e.m} · ${e.d}</div></div></div>`).join('')}</div></div>`;
+}
+/* ═══ Requests / Inbox — closed loop (ສວນ→ສາງ→ໂຮງງານ→ກັບ) ═══ */
+const ROLE_PARTY={farmer:'SUN_A',livestock:'SUN_B',trader:'TRD_1',warehouse:'WH_1',factory:'FAC_1',exporter:'EXP_1'};
+function actingParty(){return ROLE_PARTY[A.role]||null;}
+function roleOfParty(pid){ if(!pid)return null; if(pid.indexOf('SUN')===0)return 'farmer'; if(pid==='TRD_1'||pid==='TRD_2')return 'trader'; if(pid==='WH_1')return 'warehouse'; if(pid==='FAC_1')return 'factory'; if(pid==='EXP_1')return 'exporter'; return 'trader'; }
+const REQ_LABEL={INSPECT:{lo:'ຂໍກວດແປງ',en:'Inspection'},DEPOSIT:{lo:'ຂໍຝາກສາງ',en:'Warehouse deposit'},PURCHASE:{lo:'ໃບສັ່ງຊື້',en:'Purchase order'},QUOTA:{lo:'ຂໍໂຄຕ້າ',en:'Quota'}};
+function reqLabel(x){return REQ_LABEL[x]?(REQ_LABEL[x][A.lang]||REQ_LABEL[x].en):x;}
+function roleName(rid){const r=ROLES.find(x=>x.id===rid);return r?r[A.lang]:rid;}
+function inboxIncoming(){return A.requests?A.requests.filter(r=>r.toRole===A.role&&r.status==='PENDING'):[];}
+function inboxOutgoing(){return A.requests?A.requests.filter(r=>r.fromRole===A.role):[];}
+function createRequest(type,toRole,payload){
+  A.reqSeq=(A.reqSeq||0)+1;
+  const r=Object.assign({id:'REQ-'+A.reqSeq,type,toRole,fromRole:A.role,fromParty:actingParty(),status:'PENDING',at:A.day},payload||{});
+  A.requests.unshift(r);
+  logOk((isLo()?'ສົ່ງຄຳຂໍ ':'Request ')+reqLabel(type)+' → '+roleName(toRole)+(r.lotRef?' · '+r.lotRef:''));
+  toast(isLo()?'ສົ່ງຄຳຂໍແລ້ວ · ລໍຖ້າອະນຸມັດ':'Request sent · pending','good'); render(); return r;
+}
+function acceptRequest(id){const r=A.requests.find(x=>x.id===id);if(!r||r.status!=='PENDING')return;r.status='ACCEPTED';fulfill(r);render();}
+function rejectRequest(id){const r=A.requests.find(x=>x.id===id);if(!r)return;r.status='REJECTED';logNo((isLo()?'ປະຕິເສດຄຳຂໍ ':'Rejected ')+reqLabel(r.type)+' '+r.id);toast(isLo()?'ປະຕິເສດຄຳຂໍແລ້ວ':'Rejected','bad');render();}
+function fulfill(r){
+  const lot=r.lotRef?A.lots[r.lotRef]:null;
+  if(r.type==='INSPECT'&&lot){ lot.state='CERTIFIED'; lot.zb=true; A.certs[lot.id]={by:A.role,at:A.day};
+    pushLedger({type:'certify',lot:lot.id,from:roleName('field'),to:lot.holder,qty:lot.qty,price:0});
+    r.status='FULFILLED'; logOk((isLo()?'ອອກໃບຮັບຮອງ ':'Certified ')+lot.id+' · Zero-Burn'); toast(isLo()?'ອອກໃບຮັບຮອງແລ້ວ · ແຈ້ງຊາວສວນ':'Certified','good'); }
+  else if(r.type==='DEPOSIT'&&lot){ lot.wh='W1'; lot.state='IN_WAREHOUSE'; lot.since=A.day;
+    pushLedger({type:'intake',lot:lot.id,from:lot.holder,to:lot.holder,qty:lot.qty,price:0});
+    r.status='FULFILLED'; logMv((isLo()?'ຮັບເຂົ້າສາງ ':'Intake ')+lot.id+' · '+(isLo()?'ອອກໃບຝາກ':'receipt')); toast(isLo()?'ຮັບເຂົ້າສາງ + ອອກໃບຝາກແລ້ວ':'Received + receipt','good'); }
+  else if(r.type==='PURCHASE'&&lot){ const value=r.price*lot.qty*1000, seller=lot.holder; if((A.wallets[r.fromParty]||0)<value){toast(isLo()?'ຜູ້ຊື້ເງິນບໍ່ພຽງພໍ':'Buyer funds too low','bad');logNo((isLo()?'ອະນຸມັດບໍ່ໄດ້: ເງິນບໍ່ພຽງພໍ ':'Cannot fulfil: funds ')+pn(r.fromParty));r.status='PENDING';} else { const ok=doTransfer(lot.id,r.fromParty,r.price,isLo()?'ຂາຍຕາມໃບສັ່ງຊື້ ':'Sold via order '); if(ok){payFor(r.fromParty,seller,value);r.status='FULFILLED';toast(isLo()?'ຮັບອໍເດີ້ + ໂອນ + ຊຳລະເງິນ':'Accepted + transferred + paid','good');}else{r.status='PENDING';} } }
+  else if(r.type==='QUOTA'){ const q=r.qty||500; A.quota.granted+=q; r.status='FULFILLED'; logOk((isLo()?'ອະນຸມັດໂຄຕ້າ +':'Quota +')+q+'T → '+roleName(r.fromRole)); toast(isLo()?'ອະນຸມັດໂຄຕ້າແລ້ວ':'Quota granted','good'); }
+  else { r.status='FULFILLED'; }
+}
+function farmerLot(states){return Object.values(A.lots).find(l=>l.holder===actingParty()&&states.includes(l.state));}
+function actRegisterFarm(){
+  const n=Object.keys(A.lots).length; const id='L-'+(1041+n); const slid='SL-'+String.fromCharCode(68+(A.slids?A.slids.length:0));
+  mkLot(id,{crop:{lo:'ເຂົ້າຫອມມະລິ',en:'Jasmine Rice'},qty:10,wh:null,holder:actingParty(),tier:1,origin:[slid+' · '+(isLo()?'ສວນໃໝ່':'new farm')],since:A.day,zb:false,note:{lo:'ລົງທະບຽນໃໝ່ · ລໍຖ້າກວດ',en:'newly registered · awaiting inspection'}});
+  A.lots[id].state='GROWING'; A.slids.push(slid);
+  pushLedger({type:'register',lot:id,from:'—',to:actingParty(),qty:10,price:0});
+  logOk((isLo()?'ລົງທະບຽນທີ່ດິນ ':'Registered ')+slid+' → '+id+' (GROWING)');
+  toast(isLo()?'ລົງທະບຽນທີ່ດິນແລ້ວ · ສ້າງ SLId+ລ໊ອດ':'Farm registered · SLId+lot','good'); render();
+}
+function pendingReqFor(lotId){return A.requests.find(r=>r.lotRef===lotId&&r.status==='PENDING');}
+function actRequestInspect(lotId){const lot=lotId?A.lots[lotId]:farmerLot(['GROWING']);if(!lot||lot.state!=='GROWING'){toast(isLo()?'ແປງນີ້ກວດບໍ່ໄດ້ (ຕ້ອງເປັນສະຖານະ ປູກ)':'Not inspectable','bad');return;}if(pendingReqFor(lot.id)){toast(isLo()?'ມີຄຳຂໍຢູ່ແລ້ວ ລໍຖ້າອະນຸມັດ':'Already requested','bad');return;}createRequest('INSPECT','field',{lotRef:lot.id,qty:lot.qty});}
+function actHarvest(lotId){const lot=lotId?A.lots[lotId]:farmerLot(['CERTIFIED']);if(!lot||lot.state!=='CERTIFIED'){toast(isLo()?'ຕ້ອງຜ່ານການກວດກ່ອນເກັບກ່ຽວ':'Needs certification first','bad');return;}lot.state='HARVESTED';pushLedger({type:'harvest',lot:lot.id,from:actingParty(),to:actingParty(),qty:lot.qty,price:0});logOk((isLo()?'ເກັບກ່ຽວ ':'Harvested ')+lot.id);toast(isLo()?'ບັນທຶກການເກັບກ່ຽວແລ້ວ':'Harvest recorded','good');render();}
+function actRequestDeposit(lotId){const lot=lotId?A.lots[lotId]:farmerLot(['HARVESTED']);if(!lot||lot.state!=='HARVESTED'){toast(isLo()?'ຕ້ອງເກັບກ່ຽວກ່ອນຝາກສາງ':'Harvest first','bad');return;}if(pendingReqFor(lot.id)){toast(isLo()?'ມີຄຳຂໍຢູ່ແລ້ວ ລໍຖ້າອະນຸມັດ':'Already requested','bad');return;}createRequest('DEPOSIT','warehouse',{lotRef:lot.id,qty:lot.qty});}
+function actSellLot(lotId){const lot=A.lots[lotId];if(!lot||lot.state!=='IN_WAREHOUSE'){toast(isLo()?'ຕ້ອງເຂົ້າສາງກ່ອນຂາຍ':'Must be in warehouse','bad');return;}A.selected=lotId;go('#/app/market');}
+function actRequestQuota(){A.modal='quota';render();}
+function actQuotaSubmit(){const el=document.getElementById('quota-amt');const a=Math.max(50,+(el&&el.value)||500);A.modal=null;createRequest('QUOTA','tradedept',{qty:Math.round(a)});}
+function quotaModalHTML(){return `<div class="modalbg" data-modal-close><div class="modal">
+  <h3>${isLo()?'ຂໍໂຄຕ້າສົ່ງອອກ':'Request export quota'}</h3>
+  <p class="msub">${isLo()?'ໃສ່ຈຳນວນທີ່ຕ້ອງການ (ໂຕນ) → ສົ່ງໃຫ້ກົມການຄ້າອະນຸມັດ':'Enter amount (tons) → sent to Trade Dept for approval'}</p>
+  <label class="fld"><span>${isLo()?'ຈຳນວນ (ໂຕນ)':'Amount (tons)'}</span><input id="quota-amt" type="number" value="500" min="50" step="50"></label>
+  <div class="mrow"><button class="btn ghost" data-modal-close>${isLo()?'ຍົກເລີກ':'Cancel'}</button><button class="btn" id="quota-submit">${isLo()?'ສົ່ງຄຳຂໍ':'Send request'}</button></div>
+</div></div>`;}
+/* land-registration form + my-plots (create real records, multiple plots) */
+const CROP_MAP={jasmine:{lo:'ເຂົ້າຫອມມະລິ',en:'Jasmine Rice'},cassava:{lo:'ມັນສຳປະຫຼັງ',en:'Cassava'},coffee:{lo:'ກາເຟ',en:'Coffee'},banana:{lo:'ກ້ວຍ',en:'Banana'},sticky:{lo:'ເຂົ້າໜຽວ',en:'Sticky Rice'}};
+function actRegisterFarmForm(){
+  const g=id=>document.getElementById(id);
+  const name=((g('reg-name')&&g('reg-name').value)||'').trim()||(isLo()?'ສວນໃໝ່':'New farm');
+  const cropSel=(g('reg-crop')&&g('reg-crop').value)||'jasmine';
+  const area=Math.max(0.5,+(g('reg-area')&&g('reg-area').value)||5);
+  const prov=((g('reg-prov')&&g('reg-prov').value)||'Vientiane').trim();
+  const qty=Math.round(area*5*10)/10;
+  const n=Object.keys(A.lots).length; const id='L-'+(1041+n); const slid='SL-VTE-'+(1000+A.slids.length);
+  mkLot(id,{crop:CROP_MAP[cropSel]||CROP_MAP.jasmine,qty,wh:null,holder:actingParty(),tier:1,origin:[slid+' · '+name],since:A.day,zb:false,note:{lo:name+' · '+prov+' · '+area+' ha · ລໍຖ້າກວດ',en:name+' · '+prov+' · '+area+' ha · awaiting inspection'}});
+  A.lots[id].state='GROWING'; A.slids.push(slid);
+  pushLedger({type:'register',lot:id,from:'—',to:actingParty(),qty,price:0});
+  logOk((isLo()?'ລົງທະບຽນທີ່ດິນ ':'Registered ')+slid+' · '+name+' → '+id);
+  A.modal=null; toast(isLo()?'ລົງທະບຽນທີ່ດິນແລ້ວ · ສ້າງ SLId+ລ໊ອດ':'Plot registered','good'); render();
+}
+function plotNext(l){
+  if(l.state==='GROWING')return{action:'requestInspect',label:isLo()?'ຂໍກວດແປງ':'Request inspection'};
+  if(l.state==='CERTIFIED')return{action:'harvest',label:isLo()?'ບັນທຶກການເກັບກ່ຽວ':'Record harvest',gold:1};
+  if(l.state==='HARVESTED')return{action:'requestDeposit',label:isLo()?'ຂໍຝາກສາງ':'Request deposit'};
+  if(l.state==='IN_WAREHOUSE')return{action:'sellLot',label:isLo()?'ຕັ້ງຂາຍ':'Sell',gold:1};
+  return null;
+}
+function plotRow(l){
+  const pend=pendingReqFor(l.id); const next=plotNext(l);
+  const cell=pend?`<span class="chip gold">${reqLabel(pend.type)} · ${isLo()?'ລໍຖ້າອະນຸມັດ':'pending'}</span>`
+    :(next?`<button class="btn sm ${next.gold?'gold':'ghost'}" data-action="${next.action}" data-lot="${l.id}">${next.label} →</button>`:`<span class="pgsub" style="font-size:12px">${l.state==='TRADED'?(isLo()?'ຂາຍແລ້ວ':'sold'):'—'}</span>`);
+  return `<tr><td class="role" style="text-align:left"><b class="mono" style="font-size:12px">${l.id}</b><br><span style="font-family:'IBM Plex Mono';font-size:10px;color:var(--muted)">${l.origin[0]||''}</span></td><td>${l.crop[A.lang]}</td><td class="mono">${l.qty} T</td><td><span class="chip g">${stateTh(l.state)}</span>${l.zb?' <span class="chip g">✓</span>':''}</td><td style="text-align:right">${cell}</td></tr>`;
+}
+function myPlotsBlock(){
+  const mine=Object.values(A.lots).filter(l=>l.holder===actingParty());
+  return `<div class="block"><div class="bh"><h3><span style="display:inline-flex;align-items:center;gap:8px">${svg('pin',16)}${isLo()?'ໄຮ່ນາຂອງຂ້ອຍ':'My Plots'}</span></h3>
+    <button class="btn sm" data-modal-open="register" style="margin-left:auto">${svg('plus',15)} ${isLo()?'ລົງທະບຽນທີ່ດິນໃໝ່':'Register new plot'}</button></div>
+    ${mine.length?`<div class="tablewrap" style="margin-top:12px"><table style="min-width:560px"><thead><tr><th style="text-align:left">${isLo()?'ລ໊ອດ / SLId':'Lot / SLId'}</th><th style="text-align:left">${isLo()?'ພືດ':'Crop'}</th><th style="text-align:left">${isLo()?'ຈຳນວນ':'Qty'}</th><th style="text-align:left">${isLo()?'ສະຖານະ':'Status'}</th><th style="text-align:right">${isLo()?'ຂັ້ນຕໍ່ໄປ (ສ້າງລາຍການ)':'Next step'}</th></tr></thead><tbody>${mine.map(plotRow).join('')}</tbody></table></div>`
+    :`<p class="pgsub" style="margin-top:10px">${isLo()?'ຍັງບໍ່ມີທີ່ດິນ — ກົດ “ລົງທະບຽນທີ່ດິນໃໝ່” (ລົງໄດ້ຫຼາຍແປງ)':'No plots yet — click “Register new plot” (you can add many)'}</p>`}
+    <div class="note" style="margin-top:10px">${isLo()?'ແຕ່ລະແປງເດີນເທື່ອລະຂັ້ນ: ປູກ → ຂໍກວດ → (ເຈົ້າໜ້າທີ່ຮັບຮອງ) → ເກັບກ່ຽວ → ຂໍຝາກສາງ → (ສາງຮັບ) → ຂາຍ':'Each plot advances: grow → inspect → certify → harvest → deposit → sell'}</div></div>`;
+}
+/* ═══ Generic forms — ໃຫ້ທຸກບົດບາດປ້ອນ/ດຳເນີນການໄດ້ ═══ */
+const FORMS={
+ intake:{title:{lo:'ຮັບເຂົ້າສາງ (ບັນທຶກເອງ)',en:'Warehouse intake'},sub:{lo:'ສ້າງລ໊ອດເຂົ້າສາງ + ອອກໃບຝາກ',en:'Create a lot + issue receipt'},fields:[
+   {id:'crop',label:{lo:'ຊະນິດພືດ',en:'Crop'},type:'select',opt:'crop'},{id:'qty',label:{lo:'ຈຳນວນ (ໂຕນ)',en:'Qty (T)'},type:'number',value:10},{id:'from',label:{lo:'ຮັບຈາກ',en:'From'},type:'select',opt:'party'}],handler:'hIntake'},
+ factoryOrder:{title:{lo:'ສ້າງໃບສັ່ງຊື້ວັດຖຸດິບ',en:'Purchase order'},sub:{lo:'ເລືອກລ໊ອດ + ລາຄາ → ສົ່ງໃຫ້ຜູ້ຂາຍອະນຸມັດ',en:'Pick a lot + price → sent to seller'},fields:[
+   {id:'lot',label:{lo:'ລ໊ອດ',en:'Lot'},type:'select',opt:'buyableLots'},{id:'price',label:{lo:'ລາຄາ/kg',en:'Price/kg'},type:'number',value:4600}],handler:'hFactoryOrder'},
+ convert:{title:{lo:'ແປຮູບ (ອັດຕາ 5:1)',en:'Process (5:1)'},sub:{lo:'ເລືອກລ໊ອດຂອງໂຮງງານ → ສ້າງລ໊ອດແປຮູບ',en:'Pick a held lot → new processed lot'},fields:[
+   {id:'lot',label:{lo:'ລ໊ອດ (ຖືຄອງ)',en:'Held lot'},type:'select',opt:'myTradable'}],handler:'hConvert'},
+ animalReg:{title:{lo:'ລົງທະບຽນຟາມສັດ',en:'Register livestock farm'},sub:{lo:'ໜຶ່ງຄົນມີໄດ້ຫຼາຍຟາມ',en:'One owner, many farms'},fields:[
+   {id:'name',label:{lo:'ຊື່ຟາມ',en:'Farm name'},type:'text',value:''},{id:'animal',label:{lo:'ຊະນິດສັດ',en:'Animal'},type:'select',opt:'animal'},{id:'count',label:{lo:'ຈຳນວນ (ໂຕ)',en:'Count'},type:'number',value:20}],handler:'hAnimalReg'},
+ inspectRecord:{title:{lo:'ບັນທຶກຜົນກວດແປງ',en:'Record inspection'},sub:{lo:'ເລືອກແປງ + ຜົນ → ອອກໃບຮັບຮອງ ຫຼື ຂຶ້ນບັນຊີດຳ',en:'Pick plot + result'},fields:[
+   {id:'lot',label:{lo:'ແປງ',en:'Plot'},type:'select',opt:'growingLots'},{id:'result',label:{lo:'ຜົນກວດ',en:'Result'},type:'select',opt:'inspectResult'}],handler:'hInspect'},
+ logiJob:{title:{lo:'ສ້າງວຽກຂົນສົ່ງ',en:'Transport job'},sub:{lo:'ຮັບຈາກຟາມ → ສົ່ງເຂົ້າສາງ (ຫັກຄ່າຂົນສົ່ງ)',en:'Pickup → deliver'},fields:[
+   {id:'lot',label:{lo:'ລ໊ອດ',en:'Lot'},type:'select',opt:'allLots'},{id:'fee',label:{lo:'ຄ່າຂົນສົ່ງ (₭)',en:'Fee (₭)'},type:'number',value:500000}],handler:'hLogiJob'},
+ setfloor:{title:{lo:'ຕັ້ງ/ປັບ ລາຄາພື້ນຖານ (Floor)',en:'Set Floor Price'},sub:{lo:'ປັບຂຶ້ນໄດ້ ຫ້າມຫຼຸດ (ນະໂຍບາຍລັດ)',en:'Up only'},fields:[
+   {id:'amount',label:{lo:'Floor ໃໝ່ (₭/kg)',en:'New floor (₭/kg)'},type:'number',value:4200}],handler:'hSetFloor'},
+ quotacap:{title:{lo:'ຕັ້ງໂຄຕ້າຊາດ',en:'National quota'},sub:{lo:'ເພີ່ມໂຄຕ້າສົ່ງອອກລວມຂອງຊາດ',en:'Add national export quota'},fields:[
+   {id:'amount',label:{lo:'ເພີ່ມໂຄຕ້າ (ໂຕນ)',en:'Add quota (T)'},type:'number',value:1000}],handler:'hQuotaCap'},
+ adduser:{title:{lo:'ເພີ່ມຜູ້ໃຊ້ / ກຳນົດສິດ',en:'Add user / role'},sub:{lo:'ສ້າງບັນຊີ + ກຳນົດບົດບາດ (RBAC)',en:'Create account + assign role'},fields:[
+   {id:'name',label:{lo:'ຊື່ຜູ້ໃຊ້',en:'Username'},type:'text',value:''},{id:'role',label:{lo:'ບົດບາດ',en:'Role'},type:'select',opt:'role'}],handler:'hAddUser'},
+};
+function fldOptions(opt){
+ if(opt==='crop') return Object.keys(CROP_MAP).map(k=>[k,CROP_MAP[k][A.lang]]);
+ if(opt==='party') return Object.keys(PARTY).map(id=>[id,pn(id)]);
+ if(opt==='role') return ROLES.map(r=>[r.id,r[A.lang]]);
+ if(opt==='animal') return [['cattle',isLo()?'ງົວ':'Cattle'],['buffalo',isLo()?'ຄວາຍ':'Buffalo'],['pig',isLo()?'ໝູ':'Pig'],['chicken',isLo()?'ໄກ່':'Chicken']];
+ if(opt==='inspectResult') return [['pass',isLo()?'ຜ່ານ · ອອກໃບຮັບຮອງ':'Pass · certify'],['fail',isLo()?'ບໍ່ຜ່ານ · ຂຶ້ນບັນຊີດຳ':'Fail · blacklist']];
+ if(opt==='buyableLots') return Object.values(A.lots).filter(l=>['IN_WAREHOUSE','TRADED','PROCESSED'].includes(l.state)&&l.holder!==actingParty()).map(l=>[l.id,l.id+' · '+l.crop[A.lang]+' · '+l.qty+'T · '+pn(l.holder)]);
+ if(opt==='myTradable') return Object.values(A.lots).filter(l=>l.holder===actingParty()&&['IN_WAREHOUSE','TRADED'].includes(l.state)).map(l=>[l.id,l.id+' · '+l.crop[A.lang]+' · '+l.qty+'T']);
+ if(opt==='growingLots') return Object.values(A.lots).filter(l=>l.state==='GROWING').map(l=>[l.id,l.id+' · '+pn(l.holder)]);
+ if(opt==='allLots') return Object.values(A.lots).map(l=>[l.id,l.id+' · '+l.crop[A.lang]+' · '+stateTh(l.state)]);
+ return [];
+}
+function formModalHTML(name){
+ const f=FORMS[name]; if(!f) return '';
+ const opts=o=>{const a=fldOptions(o);return a.length?a.map(([v,t])=>`<option value="${v}">${t}</option>`).join(''):'<option value="">—</option>';};
+ return `<div class="modalbg" data-modal-close><div class="modal"><h3>${f.title[A.lang]}</h3>${f.sub?`<p class="msub">${f.sub[A.lang]}</p>`:''}
+   ${f.fields.map(fl=>`<label class="fld"><span>${fl.label[A.lang]}</span>${fl.type==='select'?`<select id="f-${fl.id}">${opts(fl.opt)}</select>`:`<input id="f-${fl.id}" type="${fl.type}" value="${fl.value!==undefined?fl.value:''}">`}</label>`).join('')}
+   <div class="mrow"><button class="btn ghost" data-modal-close>${isLo()?'ຍົກເລີກ':'Cancel'}</button><button class="btn" data-form-submit="${name}">${isLo()?'ບັນທຶກ':'Submit'}</button></div></div></div>`;
+}
+function submitForm(name){const f=FORMS[name];if(!f)return;const v={};f.fields.forEach(fl=>{const el=document.getElementById('f-'+fl.id);v[fl.id]=el?el.value:'';});A.modal=null;({hIntake,hFactoryOrder,hConvert,hAnimalReg,hInspect,hLogiJob,hSetFloor,hQuotaCap,hAddUser}[f.handler]||function(){})(v);}
+function newLotId(){return 'L-'+(1041+Object.keys(A.lots).length);}
+function hIntake(v){const id=newLotId();const qty=+v.qty||10;mkLot(id,{crop:CROP_MAP[v.crop]||CROP_MAP.jasmine,qty,wh:'W1',holder:actingParty(),tier:1,origin:[pn(v.from)+' · intake'],since:A.day,zb:true,note:{lo:'ຮັບເຂົ້າສາງໂດຍກົງ',en:'Direct intake'}});A.lots[id].state='IN_WAREHOUSE';pushLedger({type:'intake',lot:id,from:v.from,to:actingParty(),qty,price:0});logMv((isLo()?'ຮັບເຂົ້າສາງ ':'Intake ')+id+' · '+qty+'T');toast(isLo()?'ຮັບເຂົ້າສາງ + ອອກໃບຝາກແລ້ວ':'Received + receipt','good');render();}
+function hFactoryOrder(v){if(!v.lot){toast(isLo()?'ບໍ່ມີລ໊ອດ':'No lot','bad');return;}actPurchaseOrder(v.lot,+v.price);}
+function hConvert(v){if(!v.lot){toast(isLo()?'ບໍ່ມີລ໊ອດ':'No lot','bad');return;}convert(v.lot);}
+function hAnimalReg(v){const id=newLotId();const slid='SL-VTE-'+(1000+A.slids.length);const cnt=+v.count||20;const AN={cattle:{lo:'ງົວ',en:'Cattle'},buffalo:{lo:'ຄວາຍ',en:'Buffalo'},pig:{lo:'ໝູ',en:'Pig'},chicken:{lo:'ໄກ່',en:'Chicken'}};mkLot(id,{crop:AN[v.animal]||AN.cattle,qty:cnt,wh:null,holder:actingParty(),tier:1,origin:[slid+' · '+(v.name||'farm')],since:A.day,zb:false,note:{lo:'ຟາມສັດ · ລໍກວດ',en:'Livestock · awaiting inspection'}});A.lots[id].state='GROWING';A.slids.push(slid);pushLedger({type:'register',lot:id,from:'—',to:actingParty(),qty:cnt,price:0});logOk((isLo()?'ລົງທະບຽນຟາມສັດ ':'Registered livestock ')+slid+' → '+id);toast(isLo()?'ລົງທະບຽນຟາມສັດແລ້ວ':'Livestock registered','good');render();}
+function hInspect(v){const lot=A.lots[v.lot];if(!lot){toast(isLo()?'ບໍ່ມີແປງ':'No plot','bad');return;}if(v.result==='fail'){lot.zb=false;lot.blacklist=true;pushLedger({type:'blacklist',lot:lot.id,from:roleName('field'),to:lot.holder,qty:lot.qty,price:0});logNo((isLo()?'ຂຶ້ນບັນຊີດຳ ':'Blacklisted ')+lot.id);toast(isLo()?'ຂຶ້ນບັນຊີດຳແລ້ວ':'Blacklisted','bad');}else{lot.state='CERTIFIED';lot.zb=true;A.certs[lot.id]={by:A.role,at:A.day};pushLedger({type:'certify',lot:lot.id,from:roleName('field'),to:lot.holder,qty:lot.qty,price:0});logOk((isLo()?'ອອກໃບຮັບຮອງ ':'Certified ')+lot.id);toast(isLo()?'ອອກໃບຮັບຮອງແລ້ວ':'Certified','good');}render();}
+function hLogiJob(v){const lot=A.lots[v.lot];if(!lot){toast(isLo()?'ບໍ່ມີລ໊ອດ':'No lot','bad');return;}const fee=+v.fee||0;pushLedger({type:'logistics',lot:lot.id,from:isLo()?'ຟາມ':'Farm',to:isLo()?'ສາງ':'WH',qty:lot.qty,price:0});logMv((isLo()?'ຂົນສົ່ງ ':'Transport ')+lot.id+' · '+(isLo()?'ຄ່າ ':'fee ')+money(fee));toast(isLo()?'ຂົນສົ່ງສຳເລັດ (ຮັບ→ສົ່ງ)':'Transport done','good');render();}
+function hSetFloor(v){const nf=Math.round(+v.amount||A.floor);if(nf<A.floor){toast(isLo()?'ຫ້າມປັບຫຼຸດຕ່ຳກວ່າເດີມ':'Cannot lower floor','bad');return;}A.floor=nf;logOk((isLo()?'ຕັ້ງ Floor Price = ':'Floor set = ')+money(nf));toast(isLo()?'ປັບ Floor Price ແລ້ວ':'Floor updated','good');render();}
+function hQuotaCap(v){const add=Math.round(+v.amount||0);A.quota.granted+=add;logOk((isLo()?'ຕັ້ງໂຄຕ້າຊາດ + ':'Quota + ')+add+'T');toast(isLo()?'ຕັ້ງໂຄຕ້າຊາດແລ້ວ':'Quota set','good');render();}
+function hAddUser(v){logOk((isLo()?'ເພີ່ມຜູ້ໃຊ້ ':'Added user ')+(v.name||'user')+' · '+roleName(v.role));toast(isLo()?'ເພີ່ມຜູ້ໃຊ້ + ກຳນົດສິດແລ້ວ':'User added','good');render();}
+function actReport(){const phys=physicalStock();logOk((isLo()?'ອອກລາຍງານ · ':'Report · ')+'Vol '+money(A.tradeVolume)+' · Stock '+phys.toFixed(1)+'T · Tx '+A.ledger.length);A.modal=null;A.report=true;render();}
+const ST_LABEL={REGISTERED:{lo:'ລົງທະບຽນ',en:'Registered'},CERTIFIED:{lo:'ຮັບຮອງແລ້ວ',en:'Certified'},IN_WAREHOUSE:{lo:'ຢູ່ໃນສາງ',en:'In warehouse'},TRADED:{lo:'ຊື້ຂາຍແລ້ວ',en:'Traded'},PROCESSED:{lo:'ແປຮູບແລ້ວ',en:'Processed'},EXPORTED:{lo:'ສົ່ງອອກແລ້ວ',en:'Exported'}};
+function stLabel(s){const o=ST_LABEL[s];return o?o[A.lang]:s;}
+function reportOverlayHTML(){
+ const lots=Object.values(A.lots), phys=physicalStock();
+ const byState={}; lots.forEach(l=>byState[l.state]=(byState[l.state]||0)+1);
+ const byHolder={}; lots.forEach(l=>byHolder[l.holder]=(byHolder[l.holder]||0)+l.qty);
+ const top=Object.entries(byHolder).sort((a,b)=>b[1]-a[1]).slice(0,5);
+ const payouts=A.ledger.filter(e=>e.type==='payout'); const paySum=payouts.reduce((a,e)=>a+(e.amount||0),0);
+ const rec=A.ledger.slice(0,14);
+ const entTxt=e=>{const who=(e.from&&e.from!=='—'?pn(e.from):'')+(e.to?' → '+pn(e.to):'');return (e.type||'')+(e.lot&&e.lot!=='—'?' '+e.lot:'')+(who?' · '+who:'');};
+ const valTxt=e=>e.price?money(e.price)+'/kg':(e.amount?money(e.amount):(e.fee?money(e.fee):'—'));
+ return `<div class="report-ov" data-report-close>
+   <div class="report-doc">
+     <div class="report-bar">
+       <button class="btn ghost sm" data-report-close>✕ ${isLo()?'ປິດ':'Close'}</button>
+       <button class="btn sm" id="report-print">🖨 ${isLo()?'ພິມ / ບັນທຶກ PDF':'Print / Save PDF'}</button></div>
+     <div class="report-page">
+       <div class="rp-head">
+         <div><div class="rp-brand">LAO AGRO LINK CENTER</div><div class="rp-sub">${isLo()?'ສູນຂໍ້ມູນ ແລະ ການຄ້າກະສິກຳແຫ່ງຊາດ':'National Agri Data & Trade Center'}</div></div>
+         <div class="rp-meta">${isLo()?'ລາຍງານລະບົບ':'System report'}<br>${roleLabel()||'—'}<br>${isLo()?'ວັນທີລະບົບ':'System day'} ${A.day}</div></div>
+       <h1>${isLo()?'ລາຍງານພາບລວມການຄ້າກະສິກຳ':'Agri-Trade Overview Report'}</h1>
+       <div class="rp-kpi">
+         <div><span>Trade Volume</span><b>${money(A.tradeVolume)}</b></div>
+         <div><span>Physical Stock</span><b>${phys.toFixed(1)} T</b></div>
+         <div><span>${isLo()?'ທຸລະກຳ':'Transactions'}</span><b>${A.ledger.length}</b></div>
+         <div><span>Floor Price</span><b>${money(A.floor)}<i>/kg</i></b></div>
+         <div><span>${isLo()?'ໂຄຕ້າເຫຼືອ':'Quota left'}</span><b>${A.quota.granted-A.quota.consumed}<i> T</i></b></div>
+         <div><span>Escrow / Payout</span><b>${money(A.escrowHeld)}<i> · ${money(paySum)}</i></b></div>
+       </div>
+       <h2>${isLo()?'ລ໊ອດຕາມສະຖານະ':'Lots by state'}</h2>
+       <table><thead><tr><th>${isLo()?'ສະຖານະ':'State'}</th><th style="text-align:right">${isLo()?'ຈຳນວນລ໊ອດ':'Lots'}</th></tr></thead><tbody>${Object.entries(byState).map(([s,n])=>`<tr><td>${stLabel(s)}</td><td style="text-align:right">${n}</td></tr>`).join('')||`<tr><td colspan="2">—</td></tr>`}</tbody></table>
+       <h2>${isLo()?'ຜູ້ຖືຄອງລ໊ອດຫຼາຍທີ່ສຸດ':'Top lot holders'}</h2>
+       <table><thead><tr><th>${isLo()?'ຝ່າຍ':'Party'}</th><th style="text-align:right">${isLo()?'ປະລິມານ':'Quantity'}</th></tr></thead><tbody>${top.map(([id,q])=>`<tr><td>${pn(id)}</td><td style="text-align:right">${q} T</td></tr>`).join('')||`<tr><td colspan="2">—</td></tr>`}</tbody></table>
+       <h2>${isLo()?'ບັນຊີການເຄື່ອນໄຫວລ່າສຸດ':'Recent ledger activity'}</h2>
+       <table><thead><tr><th>#</th><th>${isLo()?'ລາຍການ':'Entry'}</th><th style="text-align:right">${isLo()?'ມູນຄ່າ':'Value'}</th></tr></thead><tbody>${rec.map(e=>`<tr><td>${e.seq}</td><td>${entTxt(e)}</td><td style="text-align:right">${valTxt(e)}</td></tr>`).join('')||`<tr><td colspan="3">—</td></tr>`}</tbody></table>
+       <div class="rp-foot">${isLo()?'ອອກໂດຍ AGRO LINK CENTER · ເອກະສານຈຳລອງ (prototype)':'Generated by AGRO LINK CENTER · prototype document'} · ${new Date().toISOString().slice(0,10)}</div>
+     </div>
+   </div>
+ </div>`;
+}
+function govActions(){
+ let a=[];
+ if(A.role==='tradedept') a=[[isLo()?'ຕັ້ງ/ປັບ Floor':'Set Floor',null,'shield',null,'setfloor'],[isLo()?'ກ່ອງຄຳຂໍໂຄຕ້າ':'Quota inbox','inbox','inbox'],[isLo()?'ອອກລາຍງານ':'Report',null,'chart','report']];
+ else if(A.role==='ministry') a=[[isLo()?'ຕັ້ງໂຄຕ້າຊາດ':'National quota',null,'bank',null,'quotacap'],[isLo()?'ອອກລາຍງານ':'Report',null,'chart','report'],[isLo()?'ກ່ອງຄຳຂໍ':'Inbox','inbox','inbox']];
+ else if(A.role==='province') a=[[isLo()?'ກ່ອງອະນຸມັດ':'Approvals','inbox','inbox'],[isLo()?'ອອກລາຍງານແຂວງ':'Provincial report',null,'chart','report']];
+ else if(A.role==='admin') a=[[isLo()?'ເພີ່ມຜູ້ໃຊ້/ສິດ':'Add user',null,'shield',null,'adduser'],[isLo()?'ຕັ້ງ Floor':'Set Floor',null,'shield',null,'setfloor'],[isLo()?'ກ່ອງຄຳຂໍ':'Inbox','inbox','inbox']];
+ if(!a.length) return '';
+ return `<div class="block"><div class="bh"><h3>${isLo()?'ການດຳເນີນການ':'Actions'}</h3></div><div class="qa">${a.map(x=>`<button ${x[4]?`data-modal-open="${x[4]}"`:x[3]?`data-action="${x[3]}"`:`data-nav="${x[1]}"`}><span class="ic">${svg(x[2],22)}</span>${x[0]}</button>`).join('')}</div></div>`;
+}
+function modalHTML(){
+  if(A.modal&&FORMS[A.modal]) return formModalHTML(A.modal);
+  if(A.modal==='quota') return quotaModalHTML();
+  if(A.modal!=='register') return '';
+  const cropOpts=Object.keys(CROP_MAP).map(k=>`<option value="${k}">${CROP_MAP[k][A.lang]}</option>`).join('');
+  return `<div class="modalbg" data-modal-close><div class="modal">
+    <h3>${isLo()?'ລົງທະບຽນທີ່ດິນໃໝ່':'Register new plot'}</h3>
+    <p class="msub">${isLo()?'ໜຶ່ງຄົນມີໄດ້ຫຼາຍແປງ — ປ້ອນຂໍ້ມູນແລ້ວລະບົບສ້າງ SLId + ລ໊ອດໃຫ້':'One owner, many plots — creates an SLId + lot'}</p>
+    <label class="fld"><span>${isLo()?'ຊື່ໄຮ່ນາ':'Farm name'}</span><input id="reg-name" placeholder="${isLo()?'ເຊັ່ນ ສວນໂພນສະຫວັນ':'e.g. Phonsavan Farm'}"></label>
+    <label class="fld"><span>${isLo()?'ຊະນິດພືດ':'Crop'}</span><select id="reg-crop">${cropOpts}</select></label>
+    <div class="mrow"><label class="fld" style="flex:1"><span>${isLo()?'ເນື້ອທີ່ (ha)':'Area (ha)'}</span><input id="reg-area" type="number" value="5" min="0.5" step="0.5"></label><label class="fld" style="flex:1"><span>${isLo()?'ແຂວງ':'Province'}</span><input id="reg-prov" value="Vientiane"></label></div>
+    <div class="mrow"><button class="btn ghost" data-modal-close>${isLo()?'ຍົກເລີກ':'Cancel'}</button><button class="btn" id="reg-submit">${isLo()?'ລົງທະບຽນ':'Register'}</button></div>
+  </div></div>`;
+}
+function actPurchaseOrder(lotId,price){const lot=A.lots[lotId];if(!lot)return;const buyer=actingParty();if(!buyer){toast(isLo()?'ບົດບາດນີ້ຊື້ບໍ່ໄດ້':'This role cannot buy','bad');return;}if(buyer===lot.holder){toast(isLo()?'ເປັນເຈົ້າຂອງຢູ່ແລ້ວ':'Already owner','bad');return;}if(price<A.floor){toast(isLo()?'ຕ່ຳກວ່າ Floor':'Below floor','bad');return;}createRequest('PURCHASE',roleOfParty(lot.holder),{lotRef:lotId,price:Math.round(price),qty:lot.qty});}
+function pInbox(){
+  const inc=inboxIncoming(),out=inboxOutgoing();
+  return `<div style="margin-bottom:10px"><h2 style="font-size:22px">${isLo()?'ກ່ອງຄຳຂໍ / Inbox':'Requests / Inbox'}</h2><p class="pgsub">${isLo()?'ຄຳຂໍທີ່ລໍຖ້າທ່ານອະນຸມັດ ແລະ ຄຳຂໍທີ່ທ່ານສົ່ງອອກໄປ (ຄລິກຮັບ/ປະຕິເສດ)':'Awaiting your approval, and ones you sent'}</p></div>
+  <div class="block"><div class="bh"><h3>${isLo()?'ຄຳຂໍເຂົ້າ (ລໍຖ້າອະນຸມັດ)':'Incoming (pending)'}</h3><span class="chip ${inc.length?'gold':'g'}" style="margin-left:auto">${inc.length}</span></div>
+    ${inc.length?inc.map(reqCardIn).join(''):`<p class="pgsub">${isLo()?'ບໍ່ມີຄຳຂໍເຂົ້າ':'No incoming requests'}</p>`}</div>
+  <div class="block"><div class="bh"><h3>${isLo()?'ຄຳຂໍທີ່ສົ່ງອອກ':'Sent by me'}</h3></div>
+    ${out.length?out.map(reqCardOut).join(''):`<p class="pgsub">${isLo()?'ຍັງບໍ່ໄດ້ສົ່ງຄຳຂໍ':'No sent requests'}</p>`}</div>`;
+}
+function reqCardIn(r){const lq=r.lotRef&&A.lots[r.lotRef]?A.lots[r.lotRef].qty+'T':(r.qty?r.qty+'T':'');
+  return `<div class="reqrow"><div><b>${reqLabel(r.type)}</b> <span class="mono" style="font-size:11px;color:var(--muted)">${r.id}</span><div style="font-size:12.5px;color:var(--muted)">${isLo()?'ຈາກ':'from'} ${roleName(r.fromRole)}${r.lotRef?' · '+r.lotRef:''}${lq?' · '+lq:''}${r.price?' · '+money(r.price)+'/kg':''}</div></div>
+   <div class="reqbtns"><button class="btn sm" data-accept="${r.id}">${isLo()?'ຮັບ/ອະນຸມັດ':'Accept'}</button><button class="btn ghost sm" data-reject="${r.id}">${isLo()?'ປະຕິເສດ':'Reject'}</button></div></div>`;}
+function reqCardOut(r){const st={PENDING:['gold',isLo()?'ລໍຖ້າອະນຸມັດ':'pending'],ACCEPTED:['g','accepted'],FULFILLED:['g',isLo()?'ສຳເລັດ':'done'],REJECTED:['r',isLo()?'ຖືກປະຕິເສດ':'rejected']}[r.status]||['g',r.status];
+  return `<div class="reqrow"><div><b>${reqLabel(r.type)}</b> <span class="mono" style="font-size:11px;color:var(--muted)">${r.id}</span><div style="font-size:12.5px;color:var(--muted)">${isLo()?'ເຖິງ':'to'} ${roleName(r.toRole)}${r.lotRef?' · '+r.lotRef:''}</div></div><span class="chip ${st[0]}">${st[1]}</span></div>`;}
+
+/* ---------------- events ---------------- */
+document.addEventListener('click',e=>{
+ const go_=e.target.closest('[data-go]');
+ if(go_){ if(go_.dataset.guest==='1'){A.role='guest';} go(go_.dataset.go); return; }
+ const roleBtn=e.target.closest('[data-role]');
+ if(roleBtn){ A.role=roleBtn.dataset.role; go('#/app/'+perm().nav[0]); return; }
+ const moBtn=e.target.closest('[data-modal-open]');
+ if(moBtn){ A.modal=moBtn.dataset.modalOpen; render(); return; }
+ if(e.target.hasAttribute&&e.target.hasAttribute('data-modal-close')){ A.modal=null; render(); return; }
+ if(e.target.closest&&e.target.closest('#report-print')){ window.print(); return; }
+ if(e.target.hasAttribute&&e.target.hasAttribute('data-report-close')){ A.report=false; render(); return; }
+ if(e.target.id==='reg-submit'){ actRegisterFarmForm(); return; }
+ if(e.target.id==='quota-submit'){ actQuotaSubmit(); return; }
+ const actBtn=e.target.closest('[data-action]');
+ if(actBtn){ const lid=actBtn.dataset.lot; const M={registerFarm:actRegisterFarm,requestInspect:()=>actRequestInspect(lid),harvest:()=>actHarvest(lid),requestDeposit:()=>actRequestDeposit(lid),sellLot:()=>actSellLot(lid),requestQuota:actRequestQuota,report:actReport}; (M[actBtn.dataset.action]||function(){})(); return; }
+ const fsBtn=e.target.closest('[data-form-submit]'); if(fsBtn){ submitForm(fsBtn.dataset.formSubmit); return; }
+ const accBtn=e.target.closest('[data-accept]'); if(accBtn){ acceptRequest(accBtn.dataset.accept); return; }
+ const rejBtn=e.target.closest('[data-reject]'); if(rejBtn){ rejectRequest(rejBtn.dataset.reject); return; }
+ if(e.target.closest('#tester-go')){ const sel=document.getElementById('tester-role'); A.role=sel?sel.value:'farmer'; go('#/app/'+perm().nav[0]); return; }
+ const navBtn=e.target.closest('[data-nav]');
+ if(navBtn){ go('#/app/'+navBtn.dataset.nav); closeSide(); return; }
+ const langBtn=e.target.closest('[data-lang]');
+ if(langBtn){ A.lang=langBtn.dataset.lang; saveLang(A.lang); render(); return; }
+ const thmBtn=e.target.closest('[data-theme-toggle]');
+ if(thmBtn){ A.theme=A.theme==='dark'?'light':'dark'; saveTheme(A.theme); applyTheme(); render(); return; }
+ const lotBtn=e.target.closest('[data-lot]');
+ if(lotBtn){ A.selected=lotBtn.dataset.lot; render(); return; }
+ const tabBtn=e.target.closest('[data-tab]');
+ if(tabBtn){ A.sideView=tabBtn.dataset.tab; render(); return; }
+ const tickBtn=e.target.closest('[data-tick]');
+ if(tickBtn){ tickMarket(+tickBtn.dataset.tick); return; }
+ const settleBtn=e.target.closest('[data-settle]');
+ if(settleBtn){ settleContract(+settleBtn.dataset.settle); return; }
+ const toastBtn=e.target.closest('[data-toast]');
+ if(toastBtn){ toast(toastBtn.dataset.toast,'good'); return; }
+ if(e.target.id==='burger'){ document.getElementById('side').classList.add('open'); document.getElementById('scrim').classList.add('on'); return; }
+ if(e.target.id==='scrim'){ closeSide(); return; }
+ if(!A.selected) return;
+ const buyerEl=document.getElementById('buyer'),priceEl=document.getElementById('tprice');
+ const buyer=buyerEl?buyerEl.value:null, price=priceEl?+priceEl.value:0;
+ if(e.target.closest('#act-purchase')) actPurchaseOrder(A.selected,price);
+ else if(e.target.closest('#act-spot')) transferOwnership(A.selected,buyer,price);
+ else if(e.target.closest('#act-contract')) createContract(A.selected,buyer,price);
+ else if(e.target.closest('#act-future')) createFuture(A.selected,buyer,price);
+ else if(e.target.closest('#act-post')) postOffer(A.selected,price,'spot');
+ else if(e.target.closest('#act-convert')) convert(A.selected);
+ else if(e.target.closest('#act-withdraw')) withdraw(A.selected);
+ else if(e.target.closest('#act-export')) exportLot(A.selected);
+});
+function closeSide(){const s=document.getElementById('side');if(s)s.classList.remove('open');const sc=document.getElementById('scrim');if(sc)sc.classList.remove('on');}
+window.addEventListener('hashchange',render);
+A={lang:loadLang(),role:null,theme:loadTheme()};
+applyTheme();
+seedTrade();
+if(!location.hash) location.hash='#/';
+render();
+</script>
+</html>
